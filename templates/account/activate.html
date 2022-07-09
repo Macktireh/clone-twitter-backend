@@ -1,0 +1,12 @@
+{% autoescape off %}
+Hé, {{user.first_name}} !
+
+Merci de votre inscription sur Mackdin ! Vous devez suivre ce lien pour activer votre compte :
+
+https://{{domain}}{% url 'activate' uidb64=uid token=token %}
+
+Amusez-vous et n'hésitez pas à nous faire part de vos commentaires :).
+
+L'équipe Mackdin
+https://{{domain}}
+{% endautoescape %}
