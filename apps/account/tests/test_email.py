@@ -19,13 +19,13 @@ class SendEmailTestCase(TestCase):
         self.content_with_body_text = {
             "subject": "Example email",
             "body": "This is the content of the email",
-            "from_email": settings.EMAIL_HOST_USER,
+            "from_email": settings.EMAIL_HOST_USER or "admin@admin.com",
             "to": [self.user.email],
         }
         self.content_with_body_file_html = {
             "subject": "Example email",
             "body": "account/activate.html",
-            "from_email": settings.EMAIL_HOST_USER,
+            "from_email": settings.EMAIL_HOST_USER or "admin@admin.com",
             "to": [self.user.email],
             "token": "IJEFNRUSJEKHBEUBFER",
             "domain": "example.com",
