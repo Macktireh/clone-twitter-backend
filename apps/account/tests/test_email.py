@@ -47,7 +47,8 @@ https://example.com
         send_email_to_user(
             subject=self.content_with_body_text['subject'],
             template_name=self.content_with_body_text['body'],
-            user=self.user
+            user=self.user,
+            from_email=self.content_with_body_text['from_email']
         )
         self.assertEqual(len(mail.outbox), 1)
         email_message = mail.outbox[0]
@@ -62,7 +63,8 @@ https://example.com
             template_name=self.content_with_body_file_html['body'],
             user=self.user,
             token=self.content_with_body_file_html['token'],
-            domain=self.content_with_body_file_html['domain']
+            domain=self.content_with_body_file_html['domain'],
+            from_email=self.content_with_body_file_html['from_email']
         )
         self.assertEqual(len(mail.outbox), 1)
         email_message = mail.outbox[0]

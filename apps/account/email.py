@@ -7,7 +7,7 @@ from django.template.exceptions import TemplateDoesNotExist
 from django.utils.translation import gettext_lazy as _
 
 
-def send_email_to_user(subject, template_name, user, token=None, domain=None):
+def send_email_to_user(subject, template_name, user, token=None, domain=None, from_email=settings.EMAIL_HOST_USER):
     app, ext = template_name.split('/')[0], template_name.split('.')[-1]
     if ext == 'html' and app in [app.split('.')[-1] for app in settings.LOCAL_APPS]:
         body = render_to_string(
@@ -25,7 +25,7 @@ def send_email_to_user(subject, template_name, user, token=None, domain=None):
     email = EmailMessage(
         subject=subject,
         body=body,
-        from_email=settings.EMAIL_HOST_USER,
+        from_email=from_email,
         to=[user.email]
     )
     email.send()
