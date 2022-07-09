@@ -1,11 +1,8 @@
-asgiref==3.5.2
 Django==3.2.14
 django-cors-headers==3.13.0
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.0
 Pillow==9.1.1
-PyJWT==2.4.0
+psycopg2==2.9.3
 python-dotenv==0.20.0
-pytz==2022.1
-sqlparse==0.4.2
-typing_extensions==4.2.0
+six
