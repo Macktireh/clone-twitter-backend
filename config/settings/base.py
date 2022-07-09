@@ -37,17 +37,18 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
-]
-
-DEVELOP_APPS = [
     'django_extensions',
 ]
+
+# DEVELOP_APPS = [
+#     'django_extensions',
+# ]
 
 LOCAL_APPS = [
     'apps.account',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + DEVELOP_APPS if os.environ.get('DEVELOP_APPS', False) == 'True' else []
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS # + DEVELOP_APPS if os.environ.get('DEVELOP_APPS', False) == 'True' else []
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
