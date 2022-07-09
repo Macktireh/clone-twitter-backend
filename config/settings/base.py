@@ -4,6 +4,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
 
+from pkg_resources import DEVELOP_DIST
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load = load_dotenv(os.path.join(BASE_DIR, '.env'))
@@ -35,6 +37,9 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+]
+
+DEVELOP_APPS = [
     'django_extensions',
 ]
 
@@ -42,7 +47,7 @@ LOCAL_APPS = [
     'apps.account',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + DEVELOP_APPS if os.environ.get('DEVELOP_APPS', False) == 'True' else []
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
