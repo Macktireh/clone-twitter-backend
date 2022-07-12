@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
+from django.utils.translation import gettext as _
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from apps.account.renderers import UserRenderer
 from apps.account.tokens import get_tokens_for_user, generate_token
-from apps.account.email import send_email_to_user
+from apps.utils.email import send_email_to_user
 from apps.account import serializers
 
 
@@ -34,7 +35,7 @@ class UserSignupView(APIView):
                 domain=get_current_site(request)
             )
             return Response(
-                {'msg': "Inscription avec succès"},
+                {'msg': _("Registration Successful")},
                 status=status.HTTP_201_CREATED
             )
         return Response(
@@ -76,17 +77,17 @@ class UserLoginView(APIView):
                 if _user.is_email_verified:
                     token = get_tokens_for_user(user)
                     return Response(
-                        {'msg': "Connexion avec succès", "token": token},
+                        {'msg': _("Login Success"), "token": token},
                         status=status.HTTP_200_OK
                     )
                 else:
                     return Response(
-                        {'error': "Veuillez d'abord confirmer votre adresse email"},
+                        {'error': _("Please confirm your email address")},
                         status=status.HTTP_400_BAD_REQUEST
                     )
             else:
                 return Response(
-                    {'errors': "L'adresse email ou mot de passe incorrect"},
+                    {'errors': _("Email or Password is not Valid")},
                     status=status.HTTP_404_NOT_FOUND
                 )
         return Response(
@@ -101,7 +102,7 @@ class UserChangePasswordView(APIView):
         serializer = serializers.UserChangePasswordSerializer(data=request.data, context={'user': request.user})
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': "Mot de passe modifier avec succès"},
+                {'msg': _("Password Changed Successfully")},
                 status=status.HTTP_200_OK
             )
         return Response(
@@ -115,7 +116,7 @@ class SendEmailResetPasswordView(APIView):
         serializer = serializers.SendEmailResetPasswordSerializer(data=request.data, context={'current_site': get_current_site(request)})
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': "Le lien de réinitialisation du mot de passe a été envoyé. Veuillez vérifier votre email"},
+                {'msg': _("Password Reset link send. Please check your Email")},
                 status=status.HTTP_200_OK
             )
         return Response(
@@ -129,7 +130,7 @@ class UserResetPasswordView(APIView):
         serializer = serializers.UserResetPasswordSerializer(data=request.data, context={'uid': uidb64, 'token': token})
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': "Mot de passe modifier avec succès"},
+                {'msg': _("Password Reset Successfully")},
                 status=status.HTTP_200_OK
             )
         return Response(
