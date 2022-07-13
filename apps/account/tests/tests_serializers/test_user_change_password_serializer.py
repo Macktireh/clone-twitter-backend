@@ -16,7 +16,7 @@ class UserChangePasswordSerializerTests(TestCase):
         }
         self.serializer_data = {
             'password': '12345',
-            'password2': '12345',
+            'confirm_password': '12345',
         }
         self.user  = User.objects.create(**self.user_attributes)
 
@@ -25,18 +25,18 @@ class UserChangePasswordSerializerTests(TestCase):
         serializer = serializers.UserChangePasswordSerializer(data=change_password_valid, context={'user': self.user})
         self.assertTrue(serializer.is_valid())
 
-    def test_invalid_password2_different_of_password(self):
+    def test_invalid_confirm_password_different_of_password(self):
         change_password_invalid = self.serializer_data
-        change_password_invalid['password2'] = '123'
+        change_password_invalid['confirm_password'] = '123'
         serializer = serializers.UserChangePasswordSerializer(data=change_password_invalid, context={'user': self.user})
         self.assertFalse(serializer.is_valid())
 
-    def test_invalid_password2_blank(self):
+    def test_invalid_confirm_password_blank(self):
         change_password_invalid = self.serializer_data
-        change_password_invalid['password2'] = ''
+        change_password_invalid['confirm_password'] = ''
         serializer = serializers.UserChangePasswordSerializer(data=change_password_invalid, context={'user': self.user})
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(str(serializer.errors['password2'][0]), 'This field may not be blank.')
+        self.assertEqual(str(serializer.errors['confirm_password'][0]), "This field may not be blank.")
 
     def test_password_is_required(self):
         change_password_invalid = self.serializer_data
@@ -44,19 +44,19 @@ class UserChangePasswordSerializerTests(TestCase):
         serializer = serializers.UserChangePasswordSerializer(data=change_password_invalid, context={'user': self.user})
         self.assertFalse(serializer.is_valid())
         self.assertEqual(set(serializer.errors), set(['password']))
-        self.assertEqual(str(serializer.errors['password'][0]), 'This field is required.')
+        self.assertEqual(str(serializer.errors['password'][0]), "This field is required.")
 
-    def test_password2_is_required(self):
+    def test_confirm_password_is_required(self):
         change_password_invalid = self.serializer_data
-        del change_password_invalid['password2']
+        del change_password_invalid['confirm_password']
         serializer = serializers.UserChangePasswordSerializer(data=change_password_invalid, context={'user': self.user})
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors), set(['password2']))
-        self.assertEqual(str(serializer.errors['password2'][0]), 'This field is required.')
+        self.assertEqual(set(serializer.errors), set(['confirm_password']))
+        self.assertEqual(str(serializer.errors['confirm_password'][0]), "This field is required.")
 
-    def test_password_and_password2_is_required(self):
+    def test_password_and_confirm_password_is_required(self):
         serializer = serializers.UserChangePasswordSerializer(data={}, context={'user': self.user})
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors), set(['password', 'password2']))
-        self.assertEqual(str(serializer.errors['password'][0]), 'This field is required.')
-        self.assertEqual(str(serializer.errors['password2'][0]), 'This field is required.')
+        self.assertEqual(set(serializer.errors), set(['password', 'confirm_password']))
+        self.assertEqual(str(serializer.errors['password'][0]), "This field is required.")
+        self.assertEqual(str(serializer.errors['confirm_password'][0]), "This field is required.")

@@ -3,10 +3,11 @@ from django.contrib.auth import get_user_model
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
-from apps.account.email import send_email_to_user
+from apps.utils.email import send_email_to_user
 
 
 User = get_user_model()
@@ -14,37 +15,27 @@ User = get_user_model()
 class UserSignupSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(max_length=150)
     last_name = serializers.CharField(max_length=150)
-    password2 = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
+    confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
     class Meta:
         model = User
         fields = [
-            'email', 'first_name', 'last_name', 'password', 'password2',
+            'email', 'first_name', 'last_name', 'password', 'confirm_password',
         ]
         extra_kwargs = {
             'password': {'write_only': True},
         }
         
     def validate(self, attrs):
-        first_name = attrs.get('first_name')
-        last_name = attrs.get('last_name')
         password = attrs.get('password')
-        password2 = attrs.get('password2')
-        if not first_name:
+        confirm_password = attrs.get('confirm_password')
+        if password and confirm_password and password != confirm_password:
             raise serializers.ValidationError(
-                "Le prénom ne doit pas être null"
-            )
-        if not last_name:
-            raise serializers.ValidationError(
-                "Le nom ne doit pas être null"
-            )
-        if password and password2 and password != password2:
-            raise serializers.ValidationError(
-                "Le mot de passe et le mot de passe de confirmation ne correspondent pas."
+                _("Password and Confirm Password doesn't match")
             )
         return attrs
     
     def create(self, validate_data):
-        validate_data.pop('password2', None)
+        validate_data.pop('confirm_password', None)
         return User.objects.create_user(**validate_data)
 
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -57,17 +48,17 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
-    password2 = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
+    confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
     class Meta:
-        fields = ['password', 'password2']
+        fields = ['password', 'confirm_password']
 
     def validate(self, attrs):
         password = attrs.get('password')
-        password2 = attrs.get('password2')
+        confirm_password = attrs.get('confirm_password')
         user = self.context.get('user')
-        if password != password2:
+        if password != confirm_password:
             raise serializers.ValidationError(
-                "Le mot de passe et le mot de passe de confirmation ne correspondent pas."
+                _("Password and Confirm Password doesn't match")
             )
         user.set_password(password)
         user.save()
@@ -93,24 +84,24 @@ class SendEmailResetPasswordSerializer(serializers.Serializer):
             )
         else:
             raise serializers.ValidationError(
-                "L'adresse email n'exist pas !"
+                _("The email address does not exist")
             )
         return attrs
 
 class UserResetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
-    password2 = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
+    confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
     class Meta:
-        fields = ['password', 'password2']
+        fields = ['password', 'confirm_password']
         
     def validate(self, attrs):
         password = attrs.get('password')
-        password2 = attrs.get('password2')
+        confirm_password = attrs.get('confirm_password')
         uid = self.context.get('uid')
         token = self.context.get('token')
-        if password != password2:
+        if password != confirm_password:
             raise serializers.ValidationError(
-                "Le mot de passe et le mot de passe de confirmation ne correspondent pas."
+                _("Password and Confirm Password doesn't match")
             )
         try:
             uid = force_str(urlsafe_base64_decode(uid))
@@ -128,6 +119,12 @@ class UserResetPasswordSerializer(serializers.Serializer):
             )
         else:
             raise serializers.ValidationError(
-                "Votre demande de réinitialisation du mot de passe est expirer"
+                _("Token is not Valid or Expired")
             )
         return attrs
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email']
