@@ -1,4 +1,4 @@
-name: Mackdin
+name: Clone Twittre Backend API
 
 on:
   push:
@@ -41,5 +41,6 @@ jobs:
           git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
 
       - name: Deploy to Heroku
+        if: github.ref == 'refs/heads/main' && job.status == 'success'
         run: |
           git push
