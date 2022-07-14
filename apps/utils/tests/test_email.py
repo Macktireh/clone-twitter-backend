@@ -35,7 +35,7 @@ Hé, Charco !
 
 Merci de votre inscription sur Mackdin ! Vous devez suivre ce lien pour activer votre compte :
 
-https://example.com/api/user/activate-user/MQ/IJEFNRUSJEKHBEUBFER/
+https://example.com/api/account/activate-user/MQ/IJEFNRUSJEKHBEUBFER/
 
 Amusez-vous et n'hésitez pas à nous faire part de vos commentaires :).
 

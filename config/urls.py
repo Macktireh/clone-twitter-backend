@@ -15,7 +15,7 @@ router.registry.extend(router_profile.registry)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/user/', include('apps.account.urls')),
+    path('api/account/', include('apps.account.urls')),
     # path('api/profile/', include('apps.profiles.urls')),
     path('api/profile/', include(router.urls)),
 ]
