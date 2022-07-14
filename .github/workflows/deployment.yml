@@ -1,4 +1,4 @@
-name: Mackdin
+name: Clone Twittre Backend API
 
 on:
   push:
