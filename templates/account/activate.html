@@ -1,12 +1,173 @@
-{% autoescape off %}
-Hé, {{user.first_name}} !
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-Merci de votre inscription sur Mackdin ! Vous devez suivre ce lien pour activer votre compte :
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clone Twitter</title>
+  <!-- <style>
+    :root {
+      --color1: #f1f1f1;
+      --color2: #15202b;
+      --color3: #1d9bf0;
+      --color4: #CCCCCC;
 
-https://{{domain}}{% url 'activate' uidb64=uid token=token %}
+    }
 
-Amusez-vous et n'hésitez pas à nous faire part de vos commentaires :).
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-L'équipe Mackdin
-https://{{domain}}
-{% endautoescape %}
+    body {
+      width: 100%;
+      padding: 2rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 18px;
+      background-color: var(--color4);
+      color: var(var(--color2));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 70%;
+      border: 1px solid var(--color1);
+      box-shadow: 0 0 2px var(--color2);
+      border-radius: 5px;
+    }
+  </style> -->
+</head>
+
+<body style="
+  width: 100%;
+  padding: 2rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 18px;
+  background-color: #CCCCCC;
+  color: #15202b;
+  display: flex;
+  justify-content: center;
+  align-items: center;">
+
+  <div style="
+    width: 90%;
+    margin: auto;
+    background-color: #f1f1f1;
+    border: 1px solid #f1f1f1;
+    box-shadow: 0 0 2px #15202b;
+    border-radius: 5px;">
+
+    <div style="
+    width: 50px;
+    height: auto;
+    margin: 8px auto;">
+      <img style="
+      width: 50px;
+      text-align: center;
+      margin: auto;"
+        src="https://media4.giphy.com/media/SMKiEh9WDO6ze/giphy.gif?cid=ecf05e47lqah6q1iam1iazxtvur6jkvduab5ymzlz9q7h7ve&rid=giphy.gif&ct=g"
+        alt="logo Twitter">
+    </div>
+
+    <h2 style="
+      text-align: center;
+      padding: 5px 0 8px 0;">Welcome to Clone of Twitter</h2>
+
+    <hr style="
+      margin: 8px 0;">
+
+    <h3 style="
+      text-align: center;">{{user.first_name}},</h3>
+
+    <p style="
+      text-align: center;
+      padding: 3px 5px;">Congratulations! You're almost set to start using clone Twitter. Just click the button
+      below to validate your email address.
+    </p>
+
+    <br>
+
+    <div style="
+    display: flex;
+    justify-content: center;
+    margin: 5px auto;">
+      <a style="
+      padding: 8px 12px;
+      text-align: center;
+      margin: auto;
+      text-decoration: none;
+      background-color: #1d9bf0;
+      color: #f1f1f1;
+      border-radius: 5px;
+      " href="https://{{domain}}{% url 'activate' uidb64=uid token=token %}">
+        Sign in to Validate your Email Address
+      </a>
+    </div>
+
+    <br>
+
+    <p style="
+      font-size: 14px;
+      text-align: center;
+      padding: 3px 5px;">If the button does not work for any reason, you can also paste the following into your
+      browser:
+      <br>
+      <a style="
+      text-align: center;
+      margin: auto;
+      text-decoration: none;
+      color: #1d9bf0;
+      " href="https://{{domain}}{% url 'activate' uidb64=uid token=token %}">
+        http://{{domain}}{% url 'activate' uidb64=uid token=token %}
+      </a>
+    </p>
+
+    <p style="
+      font-size: 16px;
+      text-align: center;
+      padding: 0 5px;">Note: You must perform this validation within the next 24 hours to keep your new account
+      enabled.
+    </p>
+
+    <p style="
+      font-size: 16px;
+      text-align: center;
+      padding: 0 5px;">If you encounter any problem, <a style="
+      text-align: center;
+      margin: auto;
+      text-decoration: none;
+      color: #1d9bf0;
+      " href="#">
+        please contact us.
+      </a>
+    </p>
+
+    <br>
+
+    <p style="
+      font-size: 15px;
+      text-align: center;
+      padding: 0 5px;">The Twitter clone team <br> <a style="
+      text-align: center;
+      margin: auto;
+      text-decoration: none;
+      color: #1d9bf0;
+      " href="https://mack-twitter.pages.dev/">
+        https://mack-twitter.pages.dev/.
+      </a>
+    </p>
+
+    <!-- Merci de votre inscription sur Mackdin ! Vous devez suivre ce lien pour activer votre compte :
+
+    https://{{domain}}{% url 'activate' uidb64=uid token=token %}
+
+    Amusez-vous et n'hésitez pas à nous faire part de vos commentaires :). -->
+  </div>
+</body>
+
+</html>
