@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-from apps.utils.function import profile_img, uid_gerator
+from apps.utils.function import rename_img_profile, uid_gerator
 
 
 User = get_user_model()
@@ -12,8 +12,8 @@ class Profile(models.Model):
     pseudo = models.CharField(_('pseudo'), max_length=48, blank=True, unique=True)
     bio = models.CharField(_('bio'), max_length=360, blank=True)
     birth_date = models.DateField(_('birth date'), null=True, blank=True)
-    profile_pic = models.ImageField(_('profile picture'), upload_to=profile_img, blank=True, null=True)
-    cover_pic = models.ImageField(_('cover picture'), upload_to=profile_img, blank=True, null=True)
+    picture = models.ImageField(_('profile picture'), upload_to=rename_img_profile, default='default/profilePic.jpg', blank=True, null=True)
+    cover_picture = models.ImageField(_('cover picture'), upload_to=rename_img_profile, default='default/coverPic.jpg', blank=True, null=True)
     following = models.ManyToManyField(User, blank=True, related_name='following')    
     updated = models.DateTimeField(_('update date'), auto_now=True)
     created = models.DateTimeField(_('created date'), auto_now_add=True)
