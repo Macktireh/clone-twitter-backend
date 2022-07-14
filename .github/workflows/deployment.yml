@@ -1,4 +1,4 @@
-name: Mackdin
+name: Clone Twittre Backend API
 
 on:
   push:
@@ -35,11 +35,11 @@ jobs:
         run: |
           python manage.py test -v 2
 
-      # - name: Add remote origin
-      #   if: github.ref == 'refs/heads/main' && job.status == 'success' #we specify that this action will ONLY run if everything up to now is successful- so if theres a fail in the tests, then this will not be deployed.
-      #   run: |
-      #     git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
+      - name: Add remote origin
+        if: github.ref == 'refs/heads/main' && job.status == 'success' #we specify that this action will ONLY run if everything up to now is successful- so if theres a fail in the tests, then this will not be deployed.
+        run: |
+          git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
 
-      # - name: Deploy to Heroku
-      #   run: |
-      #     git push
+      - name: Deploy to Heroku
+        run: |
+          git push
