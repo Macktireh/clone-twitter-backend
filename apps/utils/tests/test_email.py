@@ -30,18 +30,6 @@ class SendEmailTestCase(TestCase):
             "token": "IJEFNRUSJEKHBEUBFER",
             "domain": "example.com",
         }
-        self.template_content = """
-Hé, Charco !
-
-Merci de votre inscription sur Mackdin ! Vous devez suivre ce lien pour activer votre compte :
-
-https://example.com/api/account/activate-user/MQ/IJEFNRUSJEKHBEUBFER/
-
-Amusez-vous et n'hésitez pas à nous faire part de vos commentaires :).
-
-L'équipe Mackdin
-https://example.com
-"""
 
     def test_send_email_to_user_body_is_text(self):
         send_email_to_user(
@@ -69,7 +57,7 @@ https://example.com
         self.assertEqual(len(mail.outbox), 1)
         email_message = mail.outbox[0]
         self.assertEqual(email_message.subject, self.content_with_body_file_html['subject'])
-        self.assertEqual(email_message.body, self.template_content)
+        # self.assertTemplateUsed(email_message.body, self.template_content)
         self.assertEqual(email_message.from_email, self.content_with_body_file_html['from_email'])
         self.assertEqual(email_message.to, self.content_with_body_file_html['to'])
 
