@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
-from apps.utils.function import rename_img_post, uid_gerator
+from apps.utils.function import rename_img_post
 
 
 User = get_user_model()
@@ -19,11 +19,6 @@ class Post(models.Model):
 
     def __str__(self):
         return f"Post-{self.id}-{self.author.get_full_name()}"
-    
-    def save(self, *args, **kwargs):
-        if self.uid == "":
-            self.uid = uid_gerator(self.id)
-        return super().save(*args, **kwargs)
     
     @property
     def get_author(self):
@@ -46,7 +41,7 @@ class LikePost(models.Model):
         ('Like', 'Like'),
         ('Unlike', 'Unlike'),
     )
-    likes = models.CharField(choices=LIKE_CHOICES, max_length=10)
+    value = models.CharField(choices=LIKE_CHOICES, max_length=10)
     created = models.DateTimeField(_("created date"), auto_now_add=True)
     
     class Meta:

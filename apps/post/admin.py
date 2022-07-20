@@ -16,7 +16,7 @@ admin.site.register(Post, PostAdmin)
 
 
 class LikePostAdmin(admin.ModelAdmin):
-    list_display = ('like_author', 'post_author', 'post_id', 'likes', 'created',)
+    list_display = ('like_author', 'post_author', 'post_id', 'value', 'created',)
     
     def like_author(self, instance):
         return f"{instance.user.get_full_name()}"
