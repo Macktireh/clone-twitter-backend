@@ -3,10 +3,6 @@ import dj_database_url
 import django_heroku
 
 from .base import *
-from dotenv import load_dotenv
-
-
-# load = load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 
 # Database

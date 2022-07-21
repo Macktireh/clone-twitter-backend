@@ -28,7 +28,7 @@ class UserSignupView(APIView):
             user = serializer.save()
             token = generate_token.make_token(user)
             send_email_to_user(
-                subject="Confirmer votre adresse email de votre compte Mackdin", 
+                subject=f"Account activation on {get_current_site(request)}", 
                 template_name="account/activate.html", 
                 user=user, 
                 token=token, 
@@ -54,7 +54,7 @@ def user_activate_account_view(request, uidb64, token):
             user.is_email_verified = True
             user.save()
             send_email_to_user(
-                subject="Votre compte a été créé et activé avec succès !", 
+                subject=f"{get_current_site(request)} - Your account has been successfully created and activated!", 
                 template_name='account/activate_success.html', 
                 user=user, 
                 domain=get_current_site(request)

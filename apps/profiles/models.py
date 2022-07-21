@@ -1,6 +1,7 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
+
 from apps.utils.function import rename_img_profile, uid_gerator
 
 
@@ -24,10 +25,10 @@ class Profile(models.Model):
     
     def save(self, *args, **kwargs):
         if self.uid == '':
-            self.uid = uid_gerator(self.user.id)
+            self.uid = uid_gerator(self.user.id) + str(self.user.id) + uid_gerator(self.user.id)[:8]
         if self.pseudo == '':
             if self.user.first_name is not None or self.user.first_name != '':
-                self.pseudo = uid_gerator(self.user.id)[:24]
+                self.pseudo = uid_gerator(self.user.id)[:8] + str(self.user.id) + uid_gerator(self.user.id)[:8]
         return super().save(*args, **kwargs)
     
     def get_friends(self):
