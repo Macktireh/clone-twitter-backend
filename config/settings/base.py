@@ -45,6 +45,7 @@ DEVELOP_APPS = [
 ]
 
 LOCAL_APPS = [
+    'apps.home',
     'apps.account',
     'apps.profiles',
     'apps.post',

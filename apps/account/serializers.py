@@ -77,7 +77,7 @@ class SendEmailResetPasswordSerializer(serializers.Serializer):
             token = PasswordResetTokenGenerator().make_token(user)
             send_email_to_user(
                 subject=f"Password reset on {current_site}",
-                template_name='account/send_email_reset_password.html',
+                template_name='account/mail/send_email_reset_password.html',
                 user=user,
                 token=token,
                 domain=settings.DOMAIN_FRONTEND
@@ -113,7 +113,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
             user.save()
             send_email_to_user(
                 subject=f"{settings.DOMAIN_FRONTEND} - Your password has been successfully changed!", 
-                template_name='account/password_rest_success.html', 
+                template_name='account/mail/password_rest_success.html', 
                 user=user, 
                 domain=settings.DOMAIN_FRONTEND
             )
