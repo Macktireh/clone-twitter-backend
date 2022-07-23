@@ -4,21 +4,19 @@ from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.views.static import serve
 
-from rest_framework import routers
-
 from docs.swagger import schema_view
 
 from config.settings.base import ENV
-from apps.profiles.urls import router as router_profile
 
-
-router = routers.DefaultRouter()
-router.registry.extend(router_profile.registry)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/account/', include('apps.account.urls')),
-    path('api/me/', include(router.urls)),
+    path('api/me/', include('apps.profiles.urls')),
+    path('api/posts/', include('apps.post.routers.post')),
+    path('api/like-post/', include('apps.post.routers.like_post')),
+    path('api/comments/', include('apps.post.routers.comment')),
+    
     re_path(r'^docs(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^docs/api/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     # re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
