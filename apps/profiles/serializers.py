@@ -8,10 +8,12 @@ from apps.account.serializers import UserSerializer
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+
     user = UserSerializer(required=True)
     pseudo = serializers.CharField(validators=[UniqueValidator(queryset=Profile.objects.all(), lookup='iexact')])
     birthDate = serializers.DateField(source='birth_date')
     coverPicture = serializers.ImageField(source='cover_picture')
+
     class Meta:
         model = Profile
         exclude = ['id', 'birth_date', 'cover_picture', 'created']
@@ -20,7 +22,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'updated': {'read_only': True},
             'following': {'read_only': True},
         }
-    
+
     def update(self, instance, validated_data):
         try:
             if validated_data.get('user'):

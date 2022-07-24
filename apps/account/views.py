@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 
 from rest_framework.response import Response
 from rest_framework import status, viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from apps.account.renderers import UserRenderer
 from apps.account.tokens import get_tokens_for_user, generate_token
@@ -16,12 +17,13 @@ from apps.account import serializers
 
 User = get_user_model()
 
+
 class UserSignupView(viewsets.ModelViewSet):
-    
+
     renderer_classes = [UserRenderer]
     serializer_class = serializers.UserSignupSerializer
     http_method_names = ['post']
-    
+
     def create(self, request, *args, **kwargs):
         serializer = serializers.UserSignupSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -65,11 +67,11 @@ def user_activate_account_view(request, uidb64, token):
 
 
 class UserLoginView(viewsets.ModelViewSet):
-    
+
     renderer_classes = [UserRenderer]
     serializer_class = serializers.UserLoginSerializer
     http_method_names = ['post']
-    
+
     def create(self, request, *args, **kwargs):
         serializer = serializers.UserLoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -102,10 +104,11 @@ class UserLoginView(viewsets.ModelViewSet):
 
 class UserChangePasswordView(viewsets.ModelViewSet):
 
+    permission_classes = [IsAuthenticated]
     renderer_classes = [UserRenderer]
     serializer_class = serializers.UserChangePasswordSerializer
     http_method_names = ['post']
-    
+
     def create(self, request, *args, **kwargs):
         serializer = serializers.UserChangePasswordSerializer(data=request.data, context={'user': request.user})
         if serializer.is_valid(raise_exception=True):
@@ -120,11 +123,11 @@ class UserChangePasswordView(viewsets.ModelViewSet):
 
 
 class SendEmailResetPasswordView(viewsets.ModelViewSet):
-    
+
     renderer_classes = [UserRenderer]
     serializer_class = serializers.SendEmailResetPasswordSerializer
     http_method_names = ['post']
-    
+
     def create(self, request, *args, **kwargs):
         serializer = serializers.SendEmailResetPasswordSerializer(data=request.data, context={'current_site': get_current_site(request)})
         if serializer.is_valid(raise_exception=True):
@@ -139,11 +142,11 @@ class SendEmailResetPasswordView(viewsets.ModelViewSet):
 
 
 class UserResetPasswordView(viewsets.ModelViewSet):
-    
+
     renderer_classes = [UserRenderer]
     serializer_class = serializers.UserResetPasswordSerializer
     http_method_names = ['post']
-    
+
     def create(self, request, *args, **kwargs):
         uidb64 = kwargs.get('uidb64')
         token = kwargs.get('token')

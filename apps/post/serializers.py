@@ -9,9 +9,12 @@ from apps.account.serializers import UserSerializer
 
 User = get_user_model()
 
+
 class LikePostSerializer(serializers.ModelSerializer):
+
     author_detail = UserSerializer(read_only=True, source='user')
     postId = serializers.IntegerField(write_only=True)
+
     class Meta:
         model = LikePost
         fields = ['id', 'value', 'author_detail', 'post', 'postId', 'created']
@@ -21,7 +24,7 @@ class LikePostSerializer(serializers.ModelSerializer):
             'post': {'read_only': True},
             'created': {'read_only': True},
         }
-    
+
     def create(self, validate_data):
         post_id = validate_data.get('postId')
         request = self.context.get('request')
@@ -49,8 +52,9 @@ class LikePostSerializer(serializers.ModelSerializer):
 
 
 class CommentPostSerializer(serializers.ModelSerializer):
+
     author_detail = UserSerializer(read_only=True, source='author')
-    
+
     class Meta:
         model = Comment
         fields = ['id', 'author', 'author_detail', 'post', 'message', 'created']
@@ -60,10 +64,13 @@ class CommentPostSerializer(serializers.ModelSerializer):
             'created': {'read_only': True},
         }
 
+
 class PostSerializer(serializers.ModelSerializer):
+
     author_detail = UserSerializer(read_only=True, source='author')
     liked = UserSerializer(read_only=True, many=True)
     comments = CommentPostSerializer(read_only=True, many=True)
+
     class Meta:
         model = Post
         exclude = ['is_updated']
