@@ -6,9 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import gettext as _
 
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import status, viewsets
 
 from apps.account.renderers import UserRenderer
 from apps.account.tokens import get_tokens_for_user, generate_token
@@ -18,11 +16,13 @@ from apps.account import serializers
 
 User = get_user_model()
 
-class UserSignupView(APIView):
+class UserSignupView(viewsets.ModelViewSet):
     
     renderer_classes = [UserRenderer]
+    serializer_class = serializers.UserSignupSerializer
+    http_method_names = ['post']
     
-    def post(self, request, format=None):
+    def create(self, request, *args, **kwargs):
         serializer = serializers.UserSignupSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
@@ -43,6 +43,7 @@ class UserSignupView(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+
 def user_activate_account_view(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -62,11 +63,14 @@ def user_activate_account_view(request, uidb64, token):
         return redirect('https://mack-twitter.pages.dev/account/signin')
     return redirect('https://mack-twitter.pages.dev/not-found/')
 
-class UserLoginView(APIView):
+
+class UserLoginView(viewsets.ModelViewSet):
     
     renderer_classes = [UserRenderer]
+    serializer_class = serializers.UserLoginSerializer
+    http_method_names = ['post']
     
-    def post(self, request, format=None):
+    def create(self, request, *args, **kwargs):
         serializer = serializers.UserLoginSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.data.get('email')
@@ -95,10 +99,14 @@ class UserLoginView(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-class UserChangePasswordView(APIView):
+
+class UserChangePasswordView(viewsets.ModelViewSet):
+
     renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def post(self, request, format=None):
+    serializer_class = serializers.UserChangePasswordSerializer
+    http_method_names = ['post']
+    
+    def create(self, request, *args, **kwargs):
         serializer = serializers.UserChangePasswordSerializer(data=request.data, context={'user': request.user})
         if serializer.is_valid(raise_exception=True):
             return Response(
@@ -110,9 +118,14 @@ class UserChangePasswordView(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-class SendEmailResetPasswordView(APIView):
+
+class SendEmailResetPasswordView(viewsets.ModelViewSet):
+    
     renderer_classes = [UserRenderer]
-    def post(self, request, format=None):
+    serializer_class = serializers.SendEmailResetPasswordSerializer
+    http_method_names = ['post']
+    
+    def create(self, request, *args, **kwargs):
         serializer = serializers.SendEmailResetPasswordSerializer(data=request.data, context={'current_site': get_current_site(request)})
         if serializer.is_valid(raise_exception=True):
             return Response(
@@ -124,9 +137,16 @@ class SendEmailResetPasswordView(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-class UserResetPasswordView(APIView):
+
+class UserResetPasswordView(viewsets.ModelViewSet):
+    
     renderer_classes = [UserRenderer]
-    def post(self, request, uidb64, token, format=None):
+    serializer_class = serializers.UserResetPasswordSerializer
+    http_method_names = ['post']
+    
+    def create(self, request, *args, **kwargs):
+        uidb64 = kwargs.get('uidb64')
+        token = kwargs.get('token')
         serializer = serializers.UserResetPasswordSerializer(data=request.data, context={'uid': uidb64, 'token': token})
         if serializer.is_valid(raise_exception=True):
             return Response(
