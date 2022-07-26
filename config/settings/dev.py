@@ -5,10 +5,6 @@ from .base import *
 
 TYPE_DATABASE = os.environ.get('TYPE_DATABASE', 'sqlite3')
 
-print()
-print(TYPE_DATABASE, '|')
-print()
-
 # Database
 if TYPE_DATABASE != 'sqlite3':
     DATABASES = {

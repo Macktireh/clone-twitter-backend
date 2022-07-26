@@ -31,7 +31,7 @@ class UserSignupView(viewsets.ModelViewSet):
             token = generate_token.make_token(user)
             send_email_to_user(
                 subject=f"Account activation on {get_current_site(request)}", 
-                template_name="account/activate.html", 
+                template_name="account/mail/activate.html", 
                 user=user, 
                 token=token, 
                 domain=get_current_site(request)
@@ -58,7 +58,7 @@ def user_activate_account_view(request, uidb64, token):
             user.save()
             send_email_to_user(
                 subject=f"{get_current_site(request)} - Your account has been successfully created and activated!", 
-                template_name='account/activate_success.html', 
+                template_name='account/mail/activate_success.html', 
                 user=user, 
                 domain=get_current_site(request)
             )
