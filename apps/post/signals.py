@@ -9,3 +9,4 @@ from apps.utils.function import uid_gerator
 def post_save_create_profile(sender, instance, created, **kwargs):
     if instance.uid == "":
         instance.uid = uid_gerator(instance.id)
+        instance.save()

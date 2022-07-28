@@ -6,6 +6,7 @@ from apps.account.managers import UserManager
 
 
 class User(AbstractUser):
+
     username = None
     email = models.EmailField(
         _('email'),
@@ -25,7 +26,7 @@ class User(AbstractUser):
     )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
-    
+
     objects = UserManager()
 
     def __str__(self):

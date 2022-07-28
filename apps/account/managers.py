@@ -1,11 +1,14 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
+
 class UserManager(BaseUserManager):
+
     """
     Gestionnaire de modèle utilisateur personnalisé où l'email est l'identifiant unique
     pour l'authentification au lieu des noms d'utilisateur.
     """
+
     def create_user(self, email, password, **extra_fields):
         """
         Créez et enregistrez un utilisateur avec l'email et le mot de passe donnés.

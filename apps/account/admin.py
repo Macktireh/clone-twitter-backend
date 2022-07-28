@@ -6,8 +6,7 @@ from apps.account.models import User
 
 
 class UserAdmin(BaseUserAdmin):
-    # add_form = UserCreationForm
-    # form = UserChangeForm
+
     model = User
     list_display = ('email', 'first_name', 'last_name', 'is_active', 'is_email_verified', 'is_staff', 'is_superuser', 'date_joined',)
     list_filter = ('is_superuser', 'is_staff', 'is_active', 'is_email_verified', 'date_joined',)

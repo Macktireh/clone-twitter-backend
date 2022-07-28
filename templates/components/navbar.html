@@ -1,0 +1,88 @@
+{% load static %}
+<nav class="bg-black shadow-lg">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex justify-around">
+      <div class="flex space-x-7">
+        <div>
+          <!-- Website Logo -->
+          <a href="#" class="flex items-center py-4 px-2">
+            <!-- <img src="logo.png" alt="Logo" class="h-8 w-8 mr-2"> -->
+            <span class="font-semibold text-gray-500 text-2xl">Clone Twitter</span>
+          </a>
+        </div>
+      </div>
+      <!-- Primary Navbar items -->
+      <div class="flex space-x-7">
+        <div class="hidden md:flex items-center space-x-1  gap-4">
+          <a href="{% url 'home' %}" class="py-4 px-2 text-blue-500 border-b-4 border-blue-500 font-semibold ">Home</a>
+          <a href="{% url 'docs-api' %}"
+            class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">API</a>
+          <a href="https://mack-twitter.pages.dev/"
+            class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Frontend</a>
+          {% comment %}{% include 'components/op1.html' %}{% endcomment %}
+          <a href="https://github.com/Macktireh/clone-twitter-backend" target="_blank"
+            class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Code
+            Backend</a>
+          <a href="https://github.com/Macktireh/clone-twitter-frontend" target="_blank"
+            class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Code
+            Frontend</a>
+        </div>
+      </div>
+      <!-- Secondary Navbar items -->
+      <div class="hidden md:flex items-center space-x-3">
+
+        {% if user.is_authenticated %}
+        <a href="#"
+          class="py-2 px-2 font-medium text-gray-500 rounded hover:text-white transition duration-300 border-2 border-sky-500">Deconnexion
+        </a>
+        {% else %}
+        <a href="#"
+          class="py-2 px-2 font-medium text-gray-500 rounded hover:text-white transition duration-300 border-2 border-sky-500">Connexion
+        </a>
+        {% endif %}
+        <!-- <a href=""
+          class="py-2 px-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-400 transition duration-300">Sign
+          Up</a> -->
+      </div>
+      <!-- Mobile menu button -->
+      <div class="md:hidden flex items-center">
+        <button class="outline-none mobile-menu-button">
+          <svg class=" w-6 h-6 text-gray-500 hover:text-blue-500 " x-show="!showMenu" fill="none" stroke-linecap="round"
+            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+            <path d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- mobile menu -->
+  <div class="hidden mobile-menu">
+    <ul class="">
+      <li class="active"><a href="{% url 'home' %}"
+          class="block text-sm px-2 py-4 text-white bg-blue-500 font-semibold">Home</a></li>
+      <li><a href="{% url 'docs-api' %}"
+          class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">API</a>
+      </li>
+      <li><a href="https://mack-twitter.pages.dev/"
+          class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Frontend</a></li>
+      <li><a href="https://github.com/Macktireh/clone-twitter-backend" target="_blank"
+          class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Code
+          Backend</a>
+      </li>
+      <li><a href="https://github.com/Macktireh/clone-twitter-frontend" target="_blank"
+          class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Code
+          Frontend</a>
+      </li>
+      <li><a href="#" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Login</a>
+      </li>
+    </ul>
+  </div>
+  <script>
+    const btn = document.querySelector("button.mobile-menu-button");
+    const menu = document.querySelector(".mobile-menu");
+
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
+  </script>
+</nav>
