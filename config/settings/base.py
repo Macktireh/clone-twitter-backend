@@ -34,7 +34,6 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'livereload',
     'drf_yasg',
     'corsheaders',
     'rest_framework',
@@ -42,6 +41,7 @@ THIRD_PARTY_APPS = [
 ]
 
 DEVELOP_APPS = [
+    'livereload',
     'django_extensions',
 ]
 
