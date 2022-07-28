@@ -165,6 +165,3 @@ cython_debug/
 # Mediafiles and staticfiles
 media
 staticfiles
-scss
-css
-package.json
