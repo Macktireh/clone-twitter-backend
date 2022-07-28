@@ -41,6 +41,7 @@ THIRD_PARTY_APPS = [
 ]
 
 DEVELOP_APPS = [
+    'livereload',
     'django_extensions',
 ]
 
@@ -52,7 +53,7 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
-INSTALLED_APPS += DEVELOP_APPS if os.environ.get('DEVELOP_APPS', False) == 'True' else []
+INSTALLED_APPS = DEVELOP_APPS + INSTALLED_APPS if os.environ.get('DEVELOP_APPS', False) == 'True' else INSTALLED_APPS
 
 
 MIDDLEWARE = [
@@ -65,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE = MIDDLEWARE + ['livereload.middleware.LiveReloadScript'] if os.environ.get('DEVELOP_APPS', False) == 'True' else MIDDLEWARE
 
 ROOT_URLCONF = 'config.urls'
 
