@@ -17,7 +17,7 @@ ENV = os.environ.get('ENV', 'development')
 SECRET_KEY = os.environ.get('SECRET_KEY', 'spifgucrnt)heocnegcfi(zye624_2984985@54sd9+fv4-r9v4d9gv4s9r8f4vc9rd4g98')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = ENV == 'production'
+DEBUG = ENV != 'production'
 
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', ["127.0.0.1", "localhost"])
