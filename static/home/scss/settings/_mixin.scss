@@ -1,0 +1,31 @@
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex($direction, $jc, $at) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $jc;
+  align-items: $at;
+}
+
+@mixin position-abs($top, $right, $bottom, $left, $x, $y) {
+  position: absolute;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+  transform: translate($x, $y);
+}
+
+@mixin hr($m-t, $m-b, $width, $color) {
+  margin: $m-t auto $m-b;
+  width: $width;
+  // max-width: 3.5rem;
+  // height: 0.2rem;
+  background-color: $color;
+  border: none;
+  outline: none;
+}
