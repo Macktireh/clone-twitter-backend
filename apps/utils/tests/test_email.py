@@ -24,7 +24,7 @@ class SendEmailTestCase(TestCase):
         }
         self.content_with_body_file_html = {
             "subject": "Example email",
-            "body": "account/activate.html",
+            "body": "account/mail/activate.html",
             "from_email": "admin@admin.com",
             "to": [self.user.email],
             "token": "IJEFNRUSJEKHBEUBFER",

@@ -12,10 +12,13 @@ from apps.utils.email import send_email_to_user
 
 User = get_user_model()
 
+
 class UserSignupSerializer(serializers.ModelSerializer):
+
     first_name = serializers.CharField(max_length=150)
     last_name = serializers.CharField(max_length=150)
     confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
+
     class Meta:
         model = User
         fields = [
@@ -24,7 +27,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True},
         }
-        
+
     def validate(self, attrs):
         password = attrs.get('password')
         confirm_password = attrs.get('confirm_password')
@@ -33,22 +36,28 @@ class UserSignupSerializer(serializers.ModelSerializer):
                 _("Password and Confirm Password doesn't match")
             )
         return attrs
-    
+
     def create(self, validate_data):
         validate_data.pop('confirm_password', None)
         return User.objects.create_user(**validate_data)
 
+
 class UserLoginSerializer(serializers.ModelSerializer):
+
     email = serializers.EmailField(max_length=255)
+
     class Meta:
         model = User
         fields = [
             'email', 'password',
         ]
 
+
 class UserChangePasswordSerializer(serializers.Serializer):
+
     password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
     confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
+
     class Meta:
         fields = ['password', 'confirm_password']
 
@@ -64,11 +73,14 @@ class UserChangePasswordSerializer(serializers.Serializer):
         user.save()
         return attrs
 
+
 class SendEmailResetPasswordSerializer(serializers.Serializer):
+
     email = serializers.EmailField(max_length=255)
+
     class Meta:
         fields = ['email']
-        
+
     def validate(self, attrs):
         email = attrs.get('email')
         current_site = self.context.get('current_site')
@@ -77,7 +89,7 @@ class SendEmailResetPasswordSerializer(serializers.Serializer):
             token = PasswordResetTokenGenerator().make_token(user)
             send_email_to_user(
                 subject=f"Password reset on {current_site}",
-                template_name='account/send_email_reset_password.html',
+                template_name='account/mail/send_email_reset_password.html',
                 user=user,
                 token=token,
                 domain=settings.DOMAIN_FRONTEND
@@ -88,12 +100,15 @@ class SendEmailResetPasswordSerializer(serializers.Serializer):
             )
         return attrs
 
+
 class UserResetPasswordSerializer(serializers.Serializer):
+
     password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
     confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
+
     class Meta:
         fields = ['password', 'confirm_password']
-        
+
     def validate(self, attrs):
         password = attrs.get('password')
         confirm_password = attrs.get('confirm_password')
@@ -113,7 +128,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
             user.save()
             send_email_to_user(
                 subject=f"{settings.DOMAIN_FRONTEND} - Your password has been successfully changed!", 
-                template_name='account/password_rest_success.html', 
+                template_name='account/mail/password_rest_success.html', 
                 user=user, 
                 domain=settings.DOMAIN_FRONTEND
             )
@@ -125,6 +140,11 @@ class UserResetPasswordSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'email']
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'email': {'read_only': True},
+        }

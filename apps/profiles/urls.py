@@ -1,15 +1,13 @@
-from django.urls import path
-
-from apps.profiles import views
+from django.urls import include, path
 
 from rest_framework import routers
 
+from apps.profiles import views
+
+
 router = routers.DefaultRouter()
-router.register('me', views.UserProfileViewSet, basename='me')
+router.register('', views.UserProfileViewSet, basename='me')
 
-
-# urlpatterns = [
-#     path('me/', views.GetUserProfileView.as_view(), name='me'),
-#     path('f/', views.my_profile_view, name='me'),
-#     path('f/<int:id>/', views.my_profile_update_view, name='me-update'),
-# ]
+urlpatterns = [
+    path('', include(router.urls))
+]
