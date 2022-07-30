@@ -191,9 +191,3 @@ class UserSerializer(serializers.ModelSerializer):
             'id': {'read_only': True},
             'email': {'read_only': True},
         }
-
-    def validate(self, attrs):
-        return attrs
-
-    def update(self, instance, validated_data):
-        return instance
