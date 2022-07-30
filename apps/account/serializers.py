@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
+from apps.account.tokens import generate_token
 from apps.utils.email import send_email_to_user
 
 
@@ -15,14 +16,14 @@ User = get_user_model()
 
 class UserSignupSerializer(serializers.ModelSerializer):
 
-    first_name = serializers.CharField(max_length=150)
-    last_name = serializers.CharField(max_length=150)
+    firstName = serializers.CharField(source='first_name')
+    lastName = serializers.CharField(source='last_name')
     confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
 
     class Meta:
         model = User
         fields = [
-            'email', 'first_name', 'last_name', 'password', 'confirm_password',
+            'email', 'firstName', 'lastName', 'password', 'confirm_password',
         ]
         extra_kwargs = {
             'password': {'write_only': True},
@@ -42,6 +43,41 @@ class UserSignupSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validate_data)
 
 
+class UserActivationSerializer(serializers.Serializer):
+
+    uidb64 = serializers.CharField(write_only=True)
+    token = serializers.CharField(write_only=True)
+
+    class Meta:
+        fields = [
+            'uidb64', 'token',
+        ]
+
+    def validate(self, attrs):
+        uidb64 = attrs.get('uidb64')
+        token = attrs.get('token')
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except Exception as e:
+            user = None
+        if user and generate_token.check_token(user, token):
+            if not user.is_email_verified:
+                user.is_email_verified = True
+                user.save()
+                send_email_to_user(
+                    subject=f"{settings.DOMAIN_FRONTEND} - Your account has been successfully created and activated!", 
+                    template_name='account/mail/activate_success.html', 
+                    user=user, 
+                    domain=settings.DOMAIN_FRONTEND
+                )
+        else:
+            raise serializers.ValidationError(
+                _("Token is not Valid or user is not exist")
+            )
+        return attrs
+
+
 class UserLoginSerializer(serializers.ModelSerializer):
 
     email = serializers.EmailField(max_length=255)
@@ -59,7 +95,9 @@ class UserChangePasswordSerializer(serializers.Serializer):
     confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
 
     class Meta:
-        fields = ['password', 'confirm_password']
+        fields = [
+            'password', 'confirm_password'
+        ]
 
     def validate(self, attrs):
         password = attrs.get('password')
@@ -107,7 +145,9 @@ class UserResetPasswordSerializer(serializers.Serializer):
     confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
 
     class Meta:
-        fields = ['password', 'confirm_password']
+        fields = [
+            'password', 'confirm_password'
+        ]
 
     def validate(self, attrs):
         password = attrs.get('password')
@@ -141,6 +181,9 @@ class UserResetPasswordSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
 
+    # firstName = serializers.CharField(source='first_name')
+    # lastName = serializers.CharField(source='last_name')
+
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'email']
@@ -148,3 +191,9 @@ class UserSerializer(serializers.ModelSerializer):
             'id': {'read_only': True},
             'email': {'read_only': True},
         }
+
+    def validate(self, attrs):
+        return attrs
+
+    def update(self, instance, validated_data):
+        return instance
