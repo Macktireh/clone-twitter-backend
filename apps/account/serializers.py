@@ -134,7 +134,7 @@ class SendEmailResetPasswordSerializer(serializers.Serializer):
             )
         else:
             raise serializers.ValidationError(
-                _("The email address does not exist")
+                {"msg": _("The email address does not exist"), "code": "email_does_not_exist"}
             )
         return attrs
 

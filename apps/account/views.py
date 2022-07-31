@@ -132,7 +132,7 @@ class SendEmailResetPasswordView(viewsets.ModelViewSet):
         serializer = serializers.SendEmailResetPasswordSerializer(data=request.data, context={'current_site': get_current_site(request)})
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': _("Password Reset link send. Please check your Email")},
+                {'msg': _("Password Reset link send. Please check your Email"), "code": "reset_link_sent_email"},
                 status=status.HTTP_200_OK
             )
         return Response(
