@@ -15,8 +15,8 @@ class UserLoginSerializerTests(TestCase):
             'password': '12345',
         }
         self.serializer_data = {
-            'first_name': 'Zecha',
-            'last_name': 'ZZ',
+            'firstName': 'Zecha',
+            'lastName': 'ZZ',
             'email': 'zecha@gmail.com',
             'password': '12345',
             'confirm_password': '12345',
@@ -26,7 +26,7 @@ class UserLoginSerializerTests(TestCase):
 
     def test_login_contains_expected_fields(self):
         data = self.serializer.data
-        # self.assertEqual(set(data.keys()), set(['email', 'first_name', 'last_name']))
+        # self.assertEqual(set(data.keys()), set(['email', 'firstName', 'lastName']))
         self.assertCountEqual(data.keys(), ['email', 'password'])
 
     def test_login_fields_content(self):

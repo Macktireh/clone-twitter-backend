@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
 from django.shortcuts import redirect
 from django.utils.encoding import force_str
@@ -30,11 +31,11 @@ class UserSignupView(viewsets.ModelViewSet):
             user = serializer.save()
             token = generate_token.make_token(user)
             send_email_to_user(
-                subject=f"Account activation on {get_current_site(request)}", 
+                subject=f"Account activation on {settings.DOMAIN_FRONTEND}", 
                 template_name="account/mail/activate.html", 
                 user=user, 
                 token=token, 
-                domain=get_current_site(request)
+                domain=settings.DOMAIN_FRONTEND
             )
             return Response(
                 {'msg': _("Registration Successful")},
@@ -46,24 +47,23 @@ class UserSignupView(viewsets.ModelViewSet):
         )
 
 
-def user_activate_account_view(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except Exception as e:
-        user = None
-    if user and generate_token.check_token(user, token):
-        if not user.is_email_verified:
-            user.is_email_verified = True
-            user.save()
-            send_email_to_user(
-                subject=f"{get_current_site(request)} - Your account has been successfully created and activated!", 
-                template_name='account/mail/activate_success.html', 
-                user=user, 
-                domain=get_current_site(request)
+class UserActivationView(viewsets.ModelViewSet):
+
+    renderer_classes = [UserRenderer]
+    serializer_class = serializers.UserActivationSerializer
+    http_method_names = ['post']
+
+    def create(self, request, *args, **kwargs):
+        serializer = serializers.UserActivationSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            return Response(
+                {'msg': _("Your account has been successfully created and activated!")},
+                status=status.HTTP_200_OK
             )
-        return redirect('https://mack-twitter.pages.dev/account/signin')
-    return redirect('https://mack-twitter.pages.dev/not-found/')
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class UserLoginView(viewsets.ModelViewSet):
@@ -94,7 +94,7 @@ class UserLoginView(viewsets.ModelViewSet):
             else:
                 return Response(
                     {'errors': _("Email or Password is not Valid")},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_400_BAD_REQUEST
                 )
         return Response(
             serializer.errors,
@@ -132,7 +132,7 @@ class SendEmailResetPasswordView(viewsets.ModelViewSet):
         serializer = serializers.SendEmailResetPasswordSerializer(data=request.data, context={'current_site': get_current_site(request)})
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': _("Password Reset link send. Please check your Email")},
+                {'msg': _("Password Reset link send. Please check your Email"), "code": "reset_link_sent_email"},
                 status=status.HTTP_200_OK
             )
         return Response(

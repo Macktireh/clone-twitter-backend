@@ -15,76 +15,76 @@ class UserSignupSerializerTests(TestCase):
             'password': '12345',
         }
         self.serializer_data = {
-            'first_name': 'Zecha',
-            'last_name': 'ZZ',
+            'firstName': 'Zecha',
+            'lastName': 'ZZ',
             'email': 'zecha@gmail.com',
-            'password': '12345',
-            'confirm_password': '12345',
+            'password': 'Test@123',
+            'confirmPassword': 'Test@123',
         }
         self.user  = User.objects.create(**self.user_attributes)
         self.serializer = serializers.UserSignupSerializer(instance=self.user)
 
     def test_signup_contains_expected_fields(self):
         data = self.serializer.data
-        # self.assertEqual(set(data.keys()), set(['email', 'first_name', 'last_name']))
-        self.assertCountEqual(data.keys(), ['email', 'first_name', 'last_name'])
+        # self.assertEqual(set(data.keys()), set(['email', 'firstName', 'lastName']))
+        self.assertCountEqual(data.keys(), ['email', 'firstName', 'lastName'])
 
     def test_signup_field_content(self):
         data = self.serializer.data
-        self.assertEqual(data['first_name'], self.user_attributes['first_name'])
-        self.assertEqual(data['last_name'], self.user_attributes['last_name'])
+        self.assertEqual(data['firstName'], self.user_attributes['first_name'])
+        self.assertEqual(data['lastName'], self.user_attributes['last_name'])
         self.assertEqual(data['email'], self.user_attributes['email'])
 
     def test_signup_fields_is_required(self):
         serializer = serializers.UserSignupSerializer(data={})
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors), set(['first_name', 'last_name', 'email', 'password', 'confirm_password']))
-        self.assertEqual(str(serializer.errors['first_name'][0]), "This field is required.")
-        self.assertEqual(str(serializer.errors['last_name'][0]), "This field is required.")
+        self.assertEqual(set(serializer.errors), set(['firstName', 'lastName', 'email', 'password', 'confirmPassword']))
+        self.assertEqual(str(serializer.errors['firstName'][0]), "This field is required.")
+        self.assertEqual(str(serializer.errors['lastName'][0]), "This field is required.")
         self.assertEqual(str(serializer.errors['email'][0]), "This field is required.")
         self.assertEqual(str(serializer.errors['password'][0]), "This field is required.")
-        self.assertEqual(str(serializer.errors['confirm_password'][0]), "This field is required.")
+        self.assertEqual(str(serializer.errors['confirmPassword'][0]), "This field is required.")
 
-    def test_signup_first_name_field_is_required(self):
+    def test_signup_firstName_field_is_required(self):
         serializer_data = self.serializer_data
-        del serializer_data['first_name']
+        del serializer_data['firstName']
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors), set(['first_name']))
-        self.assertEqual(str(serializer.errors['first_name'][0]), "This field is required.")
+        self.assertEqual(set(serializer.errors), set(['firstName']))
+        self.assertEqual(str(serializer.errors['firstName'][0]), "This field is required.")
 
-    def test_signup_first_name_field_is_not_blank(self):
+    def test_signup_firstName_field_is_not_blank(self):
         serializer_data = self.serializer_data
-        serializer_data['first_name'] = ''
+        serializer_data['firstName'] = ''
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors), set(['first_name']))
-        self.assertEqual(str(serializer.errors['first_name'][0]), "This field may not be blank.")
+        self.assertEqual(set(serializer.errors), set(['firstName']))
+        self.assertEqual(str(serializer.errors['firstName'][0]), "This field may not be blank.")
 
-    def test_signup_first_name_field_is_valide(self):
+    def test_signup_firstName_field_is_valide(self):
         serializer_data = self.serializer_data
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertTrue(serializer.is_valid())
         self.assertFalse(serializer.errors)
         self.assertEqual(serializer.errors, {})
 
-    def test_signup_last_name_field_is_required(self):
+    def test_signup_lastName_field_is_required(self):
         serializer_data = self.serializer_data
-        del serializer_data['last_name']
+        del serializer_data['lastName']
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors), set(['last_name']))
-        self.assertEqual(str(serializer.errors['last_name'][0]), "This field is required.")
+        self.assertEqual(set(serializer.errors), set(['lastName']))
+        self.assertEqual(str(serializer.errors['lastName'][0]), "This field is required.")
 
-    def test_signup_last_name_field_is_not_blank(self):
+    def test_signup_lastName_field_is_not_blank(self):
         serializer_data = self.serializer_data
-        serializer_data['last_name'] = ''
+        serializer_data['lastName'] = ''
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors), set(['last_name']))
-        self.assertEqual(str(serializer.errors['last_name'][0]), "This field may not be blank.")
+        self.assertEqual(set(serializer.errors), set(['lastName']))
+        self.assertEqual(str(serializer.errors['lastName'][0]), "This field may not be blank.")
 
-    def test_signup_last_name_field_is_valide(self):
+    def test_signup_lastName_field_is_valide(self):
         serializer_data = self.serializer_data
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertTrue(serializer.is_valid())
@@ -130,6 +130,14 @@ class UserSignupSerializerTests(TestCase):
         self.assertEqual(set(serializer.errors), set(['password']))
         self.assertEqual(str(serializer.errors['password'][0]), "This field may not be blank.")
 
+    def test_signup_password_field_is_invalid(self):
+        serializer_data = self.serializer_data
+        serializer_data['password'] = '12345'
+        serializer = serializers.UserSignupSerializer(data=serializer_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(set(serializer.errors), set(['password']))
+        self.assertEqual(str(serializer.errors['password'][0]), "The password must contain at least 8 characters, at least one upper and lower case letter, one number and one special character.")
+
     def test_signup_password_field_is_valide(self):
         serializer_data = self.serializer_data
         serializer = serializers.UserSignupSerializer(data=serializer_data)
@@ -139,19 +147,19 @@ class UserSignupSerializerTests(TestCase):
 
     def test_signup_confirm_password_field_is_required(self):
         serializer_data = self.serializer_data
-        del serializer_data['confirm_password']
+        del serializer_data['confirmPassword']
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors), set(['confirm_password']))
-        self.assertEqual(str(serializer.errors['confirm_password'][0]), "This field is required.")
+        self.assertEqual(set(serializer.errors), set(['confirmPassword']))
+        self.assertEqual(str(serializer.errors['confirmPassword'][0]), "This field is required.")
 
     def test_signup_confirm_password_field_is_not_blank(self):
         serializer_data = self.serializer_data
-        serializer_data['confirm_password'] = ''
+        serializer_data['confirmPassword'] = ''
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors), set(['confirm_password']))
-        self.assertEqual(str(serializer.errors['confirm_password'][0]), "This field may not be blank.")
+        self.assertEqual(set(serializer.errors), set(['confirmPassword']))
+        self.assertEqual(str(serializer.errors['confirmPassword'][0]), "This field may not be blank.")
 
     def test_signup_confirm_password_field_is_valide(self):
         serializer_data = self.serializer_data
@@ -162,7 +170,7 @@ class UserSignupSerializerTests(TestCase):
 
     def test_signup_if_the_confirm_password_matches_the_password(self):
         serializer_data = self.serializer_data
-        serializer_data['confirm_password'] = '1234'
+        serializer_data['confirmPassword'] = '1234'
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertFalse(serializer.is_valid())
         self.assertEqual(set(serializer.errors), set(['non_field_errors']))
@@ -170,9 +178,10 @@ class UserSignupSerializerTests(TestCase):
 
     def test_signup_if_the_password_matches_the_confirm_password(self):
         serializer_data = self.serializer_data
-        serializer_data['password'] = '1234'
+        serializer_data['password'] = 'Test@000'
         serializer = serializers.UserSignupSerializer(data=serializer_data)
         self.assertFalse(serializer.is_valid())
+        print("set(serializer.errors) : ", set(serializer.errors))
         self.assertEqual(set(serializer.errors), set(['non_field_errors']))
         self.assertEqual(str(serializer.errors['non_field_errors'][0]), "Password and Confirm Password doesn't match")
 

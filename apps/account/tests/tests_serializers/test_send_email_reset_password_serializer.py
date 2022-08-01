@@ -33,7 +33,8 @@ class SendEmailResetPasswordSerializerTests(TestCase):
     def test_send_email_reset_password_serializer_is_invalid(self):
         serializer = serializers.SendEmailResetPasswordSerializer(data=self.email_not_exist, context={'current_site': self.current_site})
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(str(serializer.errors['non_field_errors'][0]), "The email address does not exist")
+        self.assertEqual(str(serializer.errors['msg'][0]), "The email address does not exist")
+        self.assertEqual(str(serializer.errors['code'][0]), "email_does_not_exist")
 
     def test_field_is_required(self):
         serializer = serializers.SendEmailResetPasswordSerializer(data={})
