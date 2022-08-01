@@ -12,11 +12,11 @@ class UserChangePasswordSerializerTests(TestCase):
             'first_name': 'Mack',
             'last_name': 'AS',
             'email': 'mack@gmail.com',
-            'password': '12345',
+            'password': 'Test@123',
         }
         self.serializer_data = {
-            'password': '12345',
-            'confirm_password': '12345',
+            'password': 'Test2@123',
+            'confirm_password': 'Test2@123',
         }
         self.user  = User.objects.create(**self.user_attributes)
 
@@ -24,6 +24,13 @@ class UserChangePasswordSerializerTests(TestCase):
         change_password_valid = self.serializer_data
         serializer = serializers.UserChangePasswordSerializer(data=change_password_valid, context={'user': self.user})
         self.assertTrue(serializer.is_valid())
+
+    def test_user_change_password_invalid(self):
+        change_password_invalid = self.serializer_data
+        change_password_invalid['password'] = '123'
+        change_password_invalid['confirm_password'] = '123'
+        serializer = serializers.UserChangePasswordSerializer(data=change_password_invalid, context={'user': self.user})
+        self.assertFalse(serializer.is_valid())
 
     def test_invalid_confirm_password_different_of_password(self):
         change_password_invalid = self.serializer_data

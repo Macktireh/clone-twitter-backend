@@ -18,8 +18,8 @@ class UserResetPasswordSerializerTests(TestCase):
             'password': '12345',
         }
         self.serializer_data = {
-            'password': '1234',
-            'confirm_password': '1234',
+            'password': 'Test@123',
+            'confirm_password': 'Test@123',
         }
         self.user  = User.objects.create(**self.user_attributes)
         self.uid = urlsafe_base64_encode(force_bytes(self.user.pk))
@@ -30,12 +30,19 @@ class UserResetPasswordSerializerTests(TestCase):
         serializer = serializers.UserResetPasswordSerializer(data=new_password_valid, context={'uid': self.uid, 'token': self.token})
         self.assertTrue(serializer.is_valid())
     
+    def test_user_reset_password_invalid(self):
+        new_password_valid = self.serializer_data
+        new_password_valid['password'] = '123'
+        new_password_valid['confirm_password'] = '123'
+        serializer = serializers.UserResetPasswordSerializer(data=new_password_valid, context={'uid': self.uid, 'token': self.token})
+        self.assertFalse(serializer.is_valid())
+    
     def test_user_reset_password_fields_is_required(self):
         new_password_valid = self.serializer_data
         serializer = serializers.UserResetPasswordSerializer(data={}, context={'uid': self.uid, 'token': self.token})
         self.assertFalse(serializer.is_valid())
     
-    def test_user_reset_password_invalid(self):
+    def test_user_reset_confirm_password_invalid(self):
         new_password_valid = self.serializer_data
         new_password_valid['confirm_password'] = '123'
         serializer = serializers.UserResetPasswordSerializer(data=new_password_valid, context={'uid': self.uid, 'token': self.token})
