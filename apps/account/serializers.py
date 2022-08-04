@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from apps.account.tokens import generate_token
-from apps.account.validators import password_validation
+from apps.account.validators import email_validation, password_validation
 from apps.utils.email import send_email_to_user
 
 
@@ -17,10 +17,44 @@ User = get_user_model()
 
 class UserSignupSerializer(serializers.ModelSerializer):
 
-    firstName = serializers.CharField(source='first_name')
-    lastName = serializers.CharField(source='last_name')
-    password = serializers.CharField(validators=[password_validation], write_only=True)
-    confirmPassword = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
+    email = serializers.CharField(
+        validators=[email_validation],
+        error_messages={
+            "blank": "Le champ email ne doit pas être vide.",
+            "required": "Le champ email est obligatoire.",
+        },
+    )
+    firstName = serializers.CharField(
+        source='first_name', 
+        error_messages={
+            "blank": "Le champ Prénon ne doit pas être vide.",
+            "required": "Le champ Prénon est obligatoire.",
+        },
+    )
+    lastName = serializers.CharField(
+        source='last_name', 
+        error_messages={
+            "blank": "Le champ Nom ne doit pas être vide.",
+            "required": "Le champ Nom est obligatoire.",
+        },
+    )
+    password = serializers.CharField(
+        validators=[password_validation], 
+        write_only=True, 
+        error_messages={
+            "blank": "Le champ Mot de passe ne doit pas être vide.",
+            "required": "Le champ Mot de passe est obligatoire.",
+        },
+    )
+    confirmPassword = serializers.CharField(
+        max_length=128, 
+        style={'input_type': 'password'}, 
+        write_only=True,
+        error_messages={
+            "blank": "Le champ Confirmer Mot de passe ne doit pas être vide.",
+            "required": "Le champ Confirmer Mot de passe est obligatoire.",
+        },
+    )
 
     class Meta:
         model = User
@@ -36,7 +70,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         confirm_password = attrs.get('confirmPassword')
         if password and confirm_password and password != confirm_password:
             raise serializers.ValidationError(
-                _("Password and Confirm Password doesn't match")
+                _("Le mot de passe et le mot de passe de confirmation ne correspondent pas")
             )
         return attrs
 
@@ -82,7 +116,19 @@ class UserActivationSerializer(serializers.Serializer):
 
 class UserLoginSerializer(serializers.ModelSerializer):
 
-    email = serializers.EmailField(max_length=255)
+    email = serializers.EmailField(
+        max_length=255,
+        error_messages={
+            "blank": "Le champ email ne doit pas être vide.",
+            "required": "Le champ email est obligatoire.",
+        },
+    )
+    password = serializers.CharField(
+        error_messages={
+            "blank": "Le champ Mot de passe ne doit pas être vide.",
+            "required": "Le champ Mot de passe est obligatoire.",
+        },
+    )
 
     class Meta:
         model = User
@@ -93,8 +139,25 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
 class UserChangePasswordSerializer(serializers.Serializer):
 
-    password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True, validators=[password_validation])
-    confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
+    password = serializers.CharField(
+        max_length=128, 
+        style={'input_type': 'password'}, 
+        write_only=True, 
+        validators=[password_validation],
+        error_messages={
+            "blank": "Le champ Mot de passe ne doit pas être vide.",
+            "required": "Le champ Mot de passe est obligatoire.",
+        },
+    )
+    confirm_password = serializers.CharField(
+        max_length=128, 
+        style={'input_type': 'password'}, 
+        write_only=True,
+        error_messages={
+            "blank": "Le champ Confirmer Mot de passe ne doit pas être vide.",
+            "required": "Le champ Confirmer Mot de passe est obligatoire.",
+        },
+    )
 
     class Meta:
         fields = [
@@ -107,7 +170,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
         user = self.context.get('user')
         if password != confirm_password:
             raise serializers.ValidationError(
-                _("Password and Confirm Password doesn't match")
+                _("Le mot de passe et le mot de passe de confirmation ne correspondent pas")
             )
         user.set_password(password)
         user.save()
@@ -116,7 +179,13 @@ class UserChangePasswordSerializer(serializers.Serializer):
 
 class SendEmailResetPasswordSerializer(serializers.Serializer):
 
-    email = serializers.EmailField(max_length=255)
+    email = serializers.EmailField(
+        max_length=255,
+        error_messages={
+            "blank": "Le champ email ne doit pas être vide.",
+            "required": "Le champ email est obligatoire.",
+        },
+    )
 
     class Meta:
         fields = ['email']
@@ -128,7 +197,7 @@ class SendEmailResetPasswordSerializer(serializers.Serializer):
             user = User.objects.get(email=email)
             token = PasswordResetTokenGenerator().make_token(user)
             send_email_to_user(
-                subject=f"Password reset on {current_site}",
+                subject=f"Réinitialisation du mot de passe sur {current_site}",
                 template_name='account/mail/send_email_reset_password.html',
                 user=user,
                 token=token,
@@ -143,8 +212,25 @@ class SendEmailResetPasswordSerializer(serializers.Serializer):
 
 class UserResetPasswordSerializer(serializers.Serializer):
 
-    password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True,validators=[password_validation])
-    confirm_password = serializers.CharField(max_length=128, style={'input_type': 'password'}, write_only=True)
+    password = serializers.CharField(
+        max_length=128, 
+        style={'input_type': 'password'}, 
+        write_only=True, 
+        validators=[password_validation],
+        error_messages={
+            "blank": "Le champ Mot de passe ne doit pas être vide.",
+            "required": "Le champ Mot de passe est obligatoire.",
+        },
+    )
+    confirm_password = serializers.CharField(
+        max_length=128, 
+        style={'input_type': 'password'}, 
+        write_only=True,
+        error_messages={
+            "blank": "Le champ Confirmer Mot de passe ne doit pas être vide.",
+            "required": "Le champ Confirmer Mot de passe est obligatoire.",
+        },
+    )
 
     class Meta:
         fields = [
@@ -158,7 +244,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
         token = self.context.get('token')
         if password != confirm_password:
             raise serializers.ValidationError(
-                _("Password and Confirm Password doesn't match")
+                _("Le mot de passe et le mot de passe de confirmation ne correspondent pas")
             )
         try:
             uid = force_str(urlsafe_base64_decode(uid))
@@ -169,7 +255,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
             user.set_password(password)
             user.save()
             send_email_to_user(
-                subject=f"{settings.DOMAIN_FRONTEND} - Your password has been successfully changed!", 
+                subject=f"{settings.DOMAIN_FRONTEND} - Votre mot de passe a été changé avec succès !", 
                 template_name='account/mail/password_rest_success.html', 
                 user=user, 
                 domain=settings.DOMAIN_FRONTEND

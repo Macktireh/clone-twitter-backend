@@ -31,7 +31,7 @@ class UserSignupView(viewsets.ModelViewSet):
             user = serializer.save()
             token = generate_token.make_token(user)
             send_email_to_user(
-                subject=f"Account activation on {settings.DOMAIN_FRONTEND}", 
+                subject=f"Activation du compte sur {settings.DOMAIN_FRONTEND}", 
                 template_name="account/mail/activate.html", 
                 user=user, 
                 token=token, 
@@ -88,12 +88,12 @@ class UserLoginView(viewsets.ModelViewSet):
                     )
                 else:
                     return Response(
-                        {'error': _("Please confirm your email address")},
+                        {'errors': _("Veuillez confirmer votre adresse e-mail !")},
                         status=status.HTTP_400_BAD_REQUEST
                     )
             else:
                 return Response(
-                    {'errors': _("Email or Password is not Valid")},
+                    {'errors': _("L'email ou le mot de passe n'est pas valide !")},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         return Response(
