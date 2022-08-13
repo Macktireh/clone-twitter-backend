@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from apps.account.renderers import UserRenderer
+from apps.utils.renderers import UserRenderer
 from apps.account.tokens import get_tokens_for_user, generate_token
 from apps.utils.email import send_email_to_user
 from apps.account import serializers

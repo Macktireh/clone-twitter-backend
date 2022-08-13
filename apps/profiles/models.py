@@ -15,7 +15,7 @@ class Profile(models.Model):
     pseudo = models.CharField(_('pseudo'), max_length=48, blank=True, unique=True)
     bio = models.CharField(_('bio'), max_length=360, blank=True)
     birth_date = models.DateField(_('birth date'), null=True, blank=True)
-    picture = models.ImageField(_('profile picture'), upload_to=rename_img_profile, default='default/profilePic.jpg', blank=True, null=True)
+    profile_picture = models.ImageField(_('profile picture'), upload_to=rename_img_profile, default='default/profilePic.jpg', blank=True, null=True)
     cover_picture = models.ImageField(_('cover picture'), upload_to=rename_img_profile, default='default/coverPic.jpg', blank=True, null=True)
     following = models.ManyToManyField(User, blank=True, related_name='following')    
     updated = models.DateTimeField(_('update date'), auto_now=True)

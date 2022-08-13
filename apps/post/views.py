@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
-from apps.account.renderers import UserRenderer
+from apps.utils.renderers import UserRenderer
 from apps.post.models import Post, Comment, LikePost
 from apps.post.serializers import PostSerializer, CommentPostSerializer, LikePostSerializer
 

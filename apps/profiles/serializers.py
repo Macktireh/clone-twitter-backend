@@ -12,11 +12,12 @@ class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=True)
     pseudo = serializers.CharField(validators=[UniqueValidator(queryset=Profile.objects.all(), lookup='iexact')])
     birthDate = serializers.DateField(source='birth_date')
+    profilePicture = serializers.ImageField(source='profile_picture')
     coverPicture = serializers.ImageField(source='cover_picture')
 
     class Meta:
         model = Profile
-        exclude = ['id', 'birth_date', 'cover_picture', 'created']
+        exclude = ['id', 'birth_date', 'profile_picture', 'cover_picture', 'created']
         extra_kwargs = {
             'uid': {'read_only': True},
             'updated': {'read_only': True},
@@ -33,7 +34,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             instance.pseudo = validated_data.get('pseudo', instance.pseudo)
             instance.bio = validated_data.get('bio', instance.bio)
             instance.birth_date = validated_data.get('birth_date', instance.birth_date)
-            instance.picture = validated_data.get('picture', instance.picture)
+            instance.profile_picture = validated_data.get('profile_picture', instance.profile_picture)
             instance.cover_picture = validated_data.get('cover_picture', instance.cover_picture)
             instance.save()
             return instance
