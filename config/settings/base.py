@@ -38,18 +38,19 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_extensions',
 ]
 
 DEVELOP_APPS = [
     'livereload',
-    'django_extensions',
 ]
 
 LOCAL_APPS = [
     'apps.home',
-    'apps.account',
+    'apps.authentication',
     'apps.profiles',
     'apps.post',
+    'apps.comment',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -146,7 +147,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles/')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 # Config Send Email
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
@@ -164,8 +165,8 @@ SIMPLE_JWT = {
 
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
+    'USER_ID_FIELD': 'public_id',
+    'USER_ID_CLAIM': 'public_id',
     'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
 
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
@@ -177,7 +178,7 @@ SIMPLE_JWT = {
 
 
 # the list of origins authorized to make HTTP requests
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', ["http://localhost:3000", "http://127.0.0.1:3000"])
+CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', ["http://localhost:3000", "http://127.0.0.1:3000",])
 
 # Domain name frontend
 DOMAIN_FRONTEND = os.environ.get('DOMAIN_FRONTEND')

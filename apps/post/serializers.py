@@ -3,8 +3,9 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
-from apps.post.models import LikePost, Post, Comment
-from apps.account.serializers import UserSerializer
+from apps.post.models import LikePost, Post
+from apps.profiles.serializers import UserSerializer
+from apps.comment.serializers import CommentPostSerializer
 
 
 User = get_user_model()
@@ -12,18 +13,13 @@ User = get_user_model()
 
 class LikePostSerializer(serializers.ModelSerializer):
 
-    author_detail = UserSerializer(read_only=True, source='user')
+    authorDetail = UserSerializer(read_only=True, source='user')
     postId = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = LikePost
-        fields = ['id', 'value', 'author_detail', 'post', 'postId', 'created']
-        extra_kwargs = {
-            'id': {'read_only': True},
-            'value': {'read_only': True},
-            'post': {'read_only': True},
-            'created': {'read_only': True},
-        }
+        fields = ['value', 'authorDetail', 'post', 'postId', 'created']
+        read_only_fields = ['value', 'post', 'created']
 
     def create(self, validate_data):
         post_id = validate_data.get('postId')
@@ -51,29 +47,30 @@ class LikePostSerializer(serializers.ModelSerializer):
         return like
 
 
-class CommentPostSerializer(serializers.ModelSerializer):
-
-    author_detail = UserSerializer(read_only=True, source='author')
-
-    class Meta:
-        model = Comment
-        fields = ['id', 'author', 'author_detail', 'post', 'message', 'created']
-        extra_kwargs = {
-            'id': {'read_only': True},
-            'author': {'write_only': True},
-            'created': {'read_only': True},
-        }
-
-
 class PostSerializer(serializers.ModelSerializer):
 
-    author_detail = UserSerializer(read_only=True, source='author')
+    authorDetail = UserSerializer(read_only=True, source='author')
+    publicId = serializers.CharField(read_only=True, source='public_id')
+    body = serializers.CharField(required=False)
+    image = serializers.ImageField(required=False)
     liked = UserSerializer(read_only=True, many=True)
     comments = CommentPostSerializer(read_only=True, many=True)
 
     class Meta:
         model = Post
-        exclude = ['is_updated']
-        extra_kwargs = {
-            'author': {'write_only': True},
-        }
+        fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'comments']
+        read_only_fields = ['author', 'is_updated', 'created', 'updated', 'liked', 'comments']
+
+    def create(self, validate_data):
+        request = self.context.get('request', None)
+        body = validate_data.get('body', None)
+        image = validate_data.get('image', None)
+        print(validate_data)
+        if body or image:
+            try:
+                new_post = Post.objects.create(author=request.user, body=body, image=image)
+                return new_post
+            except:
+                raise serializers.ValidationError({'message': _("Quelque chose a mal tourné !")})
+        else:
+            raise serializers.ValidationError({'message': _("Le champ body ou image ne doit pas être vide.")})

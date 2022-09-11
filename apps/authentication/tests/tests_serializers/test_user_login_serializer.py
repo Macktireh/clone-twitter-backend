@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from apps.account import serializers
+from apps.authentication import serializers
 
 User = get_user_model()
 

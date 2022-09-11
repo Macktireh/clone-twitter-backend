@@ -3,8 +3,8 @@ from django.core import mail
 from django.conf import settings
 from django.template.exceptions import TemplateDoesNotExist
 
-from apps.account.models import User
-from apps.utils.email import send_email_to_user
+from apps.authentication.models import User
+from apps.utils.email import send_email
 
 
 class SendEmailTestCase(TestCase):
@@ -24,15 +24,15 @@ class SendEmailTestCase(TestCase):
         }
         self.content_with_body_file_html = {
             "subject": "Example email",
-            "body": "account/mail/activate.html",
+            "body": "authentication/mail/activate.html",
             "from_email": "admin@admin.com",
             "to": [self.user.email],
             "token": "IJEFNRUSJEKHBEUBFER",
             "domain": "example.com",
         }
 
-    def test_send_email_to_user_body_is_text(self):
-        send_email_to_user(
+    def test_send_email_body_is_text(self):
+        send_email(
             subject=self.content_with_body_text['subject'],
             template_name=self.content_with_body_text['body'],
             user=self.user,
@@ -45,8 +45,8 @@ class SendEmailTestCase(TestCase):
         self.assertEqual(email_message.from_email, self.content_with_body_text['from_email'])
         self.assertEqual(email_message.to, self.content_with_body_text['to'])
 
-    def test_send_email_to_user_body_is_template_html(self):
-        send_email_to_user(
+    def test_send_email_body_is_template_html(self):
+        send_email(
             subject=self.content_with_body_file_html['subject'],
             template_name=self.content_with_body_file_html['body'],
             user=self.user,
@@ -61,9 +61,9 @@ class SendEmailTestCase(TestCase):
         self.assertEqual(email_message.from_email, self.content_with_body_file_html['from_email'])
         self.assertEqual(email_message.to, self.content_with_body_file_html['to'])
 
-    def test_send_email_to_user_body_is_template_html_not_exist(self):
+    def test_send_email_body_is_template_html_not_exist(self):
         with self.assertRaises(TemplateDoesNotExist):
-            send_email_to_user(
+            send_email(
                 subject=self.content_with_body_file_html['subject'],
                 template_name='account/test.html',
                 user=self.user,
@@ -71,9 +71,9 @@ class SendEmailTestCase(TestCase):
                 domain=self.content_with_body_file_html['domain']
             )
 
-    def test_send_email_to_user_body_is_app_not_exist(self):
+    def test_send_email_body_is_app_not_exist(self):
         with self.assertRaises(TemplateDoesNotExist):
-            send_email_to_user(
+            send_email(
                 subject=self.content_with_body_file_html['subject'],
                 template_name='accounts/activate.html',
                 user=self.user,

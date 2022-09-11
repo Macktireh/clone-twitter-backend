@@ -12,11 +12,10 @@ from config.settings.base import ENV
 urlpatterns = [
     path('', include('apps.home.urls')),
     path('admin/', admin.site.urls),
-    path('api/account/', include('apps.account.urls')),
-    path('api/me/', include('apps.profiles.urls')),
-    path('api/posts/', include('apps.post.routers.post')),
-    path('api/like-post/', include('apps.post.routers.like_post')),
-    path('api/comments/', include('apps.post.routers.comment')),
+    path('api/auth/user/', include('apps.authentication.urls')),
+    path('api/users/', include('apps.profiles.urls')),
+    path('api/posts/', include('apps.post.urls')),
+    path('api/comments/', include('apps.comment.urls')),
     
     re_path(r'^docs(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^docs/api/$', schema_view.with_ui('swagger', cache_timeout=0), name='docs-api'),

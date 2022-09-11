@@ -21,6 +21,5 @@ def rename_img_post(instance, filename):
     folder = f"{instance.author.pk}-{instance.author.first_name}-{instance.author.last_name}"
     return os.path.join('media', folder, 'post', filename)
 
-def uid_gerator(id) -> str:
-    uid = str(uuid.uuid4()).replace('-', '') + str(id) + str(uuid.uuid4()).replace('-', '')+ str(uuid.uuid4()).replace('-', '') + str(uuid.uuid4()).replace('-', '') + str(uuid.uuid4()).replace('-', '') + str(uuid.uuid4()).replace('-', '') + str(id) + str(uuid.uuid4()).replace('-', '') + str(uuid.uuid4()).replace('-', '') + str(uuid.uuid4()).replace('-', '') + str(uuid.uuid4()).replace('-', '')
-    return str(uid)
+def uid_generator() -> str:
+    return str(uuid.uuid4()).replace('-', '') + str(uuid.uuid4()).replace('-', '')

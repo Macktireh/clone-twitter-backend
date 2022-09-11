@@ -1,10 +1,23 @@
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from apps.profiles.models import Profile
-from apps.account.serializers import UserSerializer
+
+
+User = get_user_model()
+
+class UserSerializer(serializers.ModelSerializer):
+
+    # firstName = serializers.CharField(source='first_name')
+    # lastName = serializers.CharField(source='last_name')
+
+    class Meta:
+        model = User
+        fields = ['public_id', 'first_name', 'last_name']
+        read_only_fields = ['public_id']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -17,12 +30,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        exclude = ['id', 'birth_date', 'profile_picture', 'cover_picture', 'created']
-        extra_kwargs = {
-            'uid': {'read_only': True},
-            'updated': {'read_only': True},
-            'following': {'read_only': True},
-        }
+        exclude = ['id', 'birth_date', 'profile_picture', 'cover_picture']
+        read_only_fields = ['created', 'updated']
 
     def update(self, instance, validated_data):
         try:

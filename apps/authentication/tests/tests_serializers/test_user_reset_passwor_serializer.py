@@ -4,7 +4,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
-from apps.account import serializers
+from apps.authentication import serializers
 
 User = get_user_model()
 

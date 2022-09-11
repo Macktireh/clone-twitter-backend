@@ -1,8 +1,5 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
-from django.shortcuts import redirect
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import gettext as _
 
@@ -11,9 +8,9 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from apps.utils.renderers import UserRenderer
-from apps.account.tokens import get_tokens_for_user, generate_token
-from apps.utils.email import send_email_to_user
-from apps.account import serializers
+from apps.authentication.tokens import get_tokens_for_user, generate_token
+from apps.utils.email import send_email
+from apps.authentication import serializers
 
 
 User = get_user_model()
@@ -30,9 +27,9 @@ class UserSignupView(viewsets.ModelViewSet):
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             token = generate_token.make_token(user)
-            send_email_to_user(
+            send_email(
                 subject=f"Activation du compte sur {settings.DOMAIN_FRONTEND}", 
-                template_name="account/mail/activate.html", 
+                template_name="authentication/mail/activate.html", 
                 user=user, 
                 token=token, 
                 domain=settings.DOMAIN_FRONTEND
@@ -80,7 +77,7 @@ class UserLoginView(viewsets.ModelViewSet):
             user = authenticate(email=email, password=password)
             if user is not None:
                 _user = User.objects.get(email=user.email)
-                if _user.is_email_verified:
+                if _user.is_verified_email:
                     token = get_tokens_for_user(user)
                     return Response(
                         {'msg': _("Login Success"), "token": token},
@@ -122,14 +119,14 @@ class UserChangePasswordView(viewsets.ModelViewSet):
         )
 
 
-class SendEmailResetPasswordView(viewsets.ModelViewSet):
+class RequestResetPasswordView(viewsets.ModelViewSet):
 
     renderer_classes = [UserRenderer]
-    serializer_class = serializers.SendEmailResetPasswordSerializer
+    serializer_class = serializers.RequestResetPasswordSerializer
     http_method_names = ['post']
 
     def create(self, request, *args, **kwargs):
-        serializer = serializers.SendEmailResetPasswordSerializer(data=request.data, context={'current_site': get_current_site(request)})
+        serializer = serializers.RequestResetPasswordSerializer(data=request.data, context={'current_site': get_current_site(request)})
         if serializer.is_valid(raise_exception=True):
             return Response(
                 {'msg': _("Password Reset link send. Please check your Email"), "code": "reset_link_sent_email"},
@@ -154,6 +151,26 @@ class UserResetPasswordView(viewsets.ModelViewSet):
         if serializer.is_valid(raise_exception=True):
             return Response(
                 {'msg': _("Password Reset Successfully")},
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+class LogoutView(viewsets.ModelViewSet):
+
+    renderer_classes = [UserRenderer]
+    serializer_class = serializers.LogoutSerializer
+    http_method_names = ['post']
+    lookup_field = 'public_id'
+
+    def create(self, request, *args, **kwargs):
+        serializer = serializers.LogoutSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            return Response(
+                {'msg': _("Logout Successfully")},
                 status=status.HTTP_200_OK
             )
         return Response(

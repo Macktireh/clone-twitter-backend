@@ -4,12 +4,13 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.translation import gettext as _
+from django.utils import timezone
 
 from rest_framework import serializers
 
-from apps.account.tokens import generate_token
-from apps.account.validators import email_validation, password_validation
-from apps.utils.email import send_email_to_user
+from apps.authentication.tokens import generate_token
+from apps.authentication.validators import email_validation, password_validation
+from apps.utils.email import send_email
 
 
 User = get_user_model()
@@ -58,12 +59,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            'email', 'firstName', 'lastName', 'password', 'confirmPassword',
-        ]
-        extra_kwargs = {
-            'password': {'write_only': True},
-        }
+        fields = ['email', 'firstName', 'lastName', 'password', 'confirmPassword',]
 
     def validate(self, attrs):
         password = attrs.get('password')
@@ -85,9 +81,7 @@ class UserActivationSerializer(serializers.Serializer):
     token = serializers.CharField(write_only=True)
 
     class Meta:
-        fields = [
-            'uidb64', 'token',
-        ]
+        fields = ['uidb64', 'token',]
 
     def validate(self, attrs):
         uidb64 = attrs.get('uidb64')
@@ -98,12 +92,12 @@ class UserActivationSerializer(serializers.Serializer):
         except Exception as e:
             user = None
         if user and generate_token.check_token(user, token):
-            if not user.is_email_verified:
-                user.is_email_verified = True
+            if not user.is_verified_email:
+                user.is_verified_email = True
                 user.save()
-                send_email_to_user(
+                send_email(
                     subject=f"{settings.DOMAIN_FRONTEND} - Your account has been successfully created and activated!", 
-                    template_name='account/mail/activate_success.html', 
+                    template_name='authentication/mail/activate_success.html', 
                     user=user, 
                     domain=settings.DOMAIN_FRONTEND
                 )
@@ -132,9 +126,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            'email', 'password',
-        ]
+        fields = ['email', 'password',]
 
 
 class UserChangePasswordSerializer(serializers.Serializer):
@@ -160,9 +152,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
     )
 
     class Meta:
-        fields = [
-            'password', 'confirm_password'
-        ]
+        fields = ['password', 'confirm_password']
 
     def validate(self, attrs):
         password = attrs.get('password')
@@ -177,7 +167,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
         return attrs
 
 
-class SendEmailResetPasswordSerializer(serializers.Serializer):
+class RequestResetPasswordSerializer(serializers.Serializer):
 
     email = serializers.EmailField(
         max_length=255,
@@ -196,9 +186,9 @@ class SendEmailResetPasswordSerializer(serializers.Serializer):
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
             token = PasswordResetTokenGenerator().make_token(user)
-            send_email_to_user(
+            send_email(
                 subject=f"Réinitialisation du mot de passe sur {current_site}",
-                template_name='account/mail/send_email_reset_password.html',
+                template_name='authentication/mail/send_email_reset_password.html',
                 user=user,
                 token=token,
                 domain=settings.DOMAIN_FRONTEND
@@ -233,9 +223,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
     )
 
     class Meta:
-        fields = [
-            'password', 'confirm_password'
-        ]
+        fields = ['password', 'confirm_password']
 
     def validate(self, attrs):
         password = attrs.get('password')
@@ -254,9 +242,9 @@ class UserResetPasswordSerializer(serializers.Serializer):
         if user and PasswordResetTokenGenerator().check_token(user, token):
             user.set_password(password)
             user.save()
-            send_email_to_user(
+            send_email(
                 subject=f"{settings.DOMAIN_FRONTEND} - Votre mot de passe a été changé avec succès !", 
-                template_name='account/mail/password_rest_success.html', 
+                template_name='authentication/mail/password_rest_success.html', 
                 user=user, 
                 domain=settings.DOMAIN_FRONTEND
             )
@@ -267,15 +255,32 @@ class UserResetPasswordSerializer(serializers.Serializer):
         return attrs
 
 
-class UserSerializer(serializers.ModelSerializer):
+class LogoutSerializer(serializers.Serializer):
 
-    # firstName = serializers.CharField(source='first_name')
-    # lastName = serializers.CharField(source='last_name')
+    public_id = serializers.CharField(
+        write_only=True,
+        error_messages={
+            "blank": "Le champ Mot de passe ne doit pas être vide.",
+            "required": "Le champ id est obligatoire.",
+        },
+    )
+
+    def validate(self, attrs):
+        try:
+            public_id = attrs.get('public_id', None)
+            if public_id is None:
+                raise serializers.ValidationError(
+                    _("Le champ public_id est obligatoire.")
+                )
+            user = User.objects.get(public_id=public_id)
+            user.last_logout = timezone.now()
+            user.save()
+            return attrs
+        except:
+            raise serializers.ValidationError(
+                _("L'utilisateur ne existe pas !")
+            )
+
 
     class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name', 'email']
-        extra_kwargs = {
-            'id': {'read_only': True},
-            'email': {'read_only': True},
-        }
+        fields = ['public_id']

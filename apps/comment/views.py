@@ -6,28 +6,28 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
 from apps.utils.renderers import UserRenderer
-from apps.post.models import Post, LikePost
-from apps.post.serializers import PostSerializer, LikePostSerializer
+from apps.comment.models import Comment, LikeComment
+from apps.comment.serializers import CommentPostSerializer, LikeCommentSerializer
 
 
-class PostViewSet(viewsets.ModelViewSet):
+class CommentPostViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated, ]
     renderer_classes = [UserRenderer, ]
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
-    queryset = Post.objects.select_related('author').all()
-    serializer_class = PostSerializer
+    queryset = Comment.objects.select_related('author').all()
+    serializer_class = CommentPostSerializer
     lookup_field = 'public_id'
 
     def update(self, request, *args, **kwargs):
         try:
             public_id = kwargs.get('public_id', None)
             if public_id:
-                instance = Post.objects.get(public_id=public_id)
+                instance = Comment.objects.get(public_id=public_id)
                 if not instance.author == request.user:
                     return Response({'error': {'detail': _("Pas autoriser à modifier !")}}, status=status.HTTP_403_FORBIDDEN)
                 partial = kwargs.pop('partial', False)
-                serializer = PostSerializer(instance, data=request.data, partial=partial)
+                serializer = CommentPostSerializer(instance, data=request.data, partial=partial)
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -42,7 +42,7 @@ class PostViewSet(viewsets.ModelViewSet):
         try:
             public_id = kwargs.get('public_id', None)
             if public_id:
-                instance = Post.objects.get(public_id=public_id)
+                instance = Comment.objects.get(public_id=public_id)
                 if not instance.author == request.user:
                     return Response({'error': {'detail': _("Pas autoriser à modifier !")}}, status=status.HTTP_403_FORBIDDEN)
                 self.perform_destroy(instance)
@@ -53,10 +53,9 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response({'errors': {'message': _("Quelque chose a mal tourné !")}}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class LikePostViewSet(viewsets.ModelViewSet):
+class LikeCommentViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated, ]
     renderer_classes = [UserRenderer, ]
-    queryset = LikePost.objects.all()
-    serializer_class = LikePostSerializer
-    lookup_field = 'public_id'
+    queryset = LikeComment.objects.all()
+    serializer_class = LikeCommentSerializer

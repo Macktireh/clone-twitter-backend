@@ -11,42 +11,44 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('post', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Post',
+            name='Comment',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('public_id', models.CharField(blank=True, max_length=64, unique=True)),
-                ('body', models.TextField(blank=True)),
+                ('public_id', models.CharField(max_length=64, unique=True)),
+                ('message', models.TextField(max_length=500)),
                 ('image', models.ImageField(blank=True, null=True, upload_to=apps.utils.functions.rename_img_post, verbose_name='image')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='created date')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='updated date')),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('updated', models.DateTimeField(auto_now=True)),
                 ('is_updated', models.BooleanField(default=False, verbose_name='is updated')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='posts', to=settings.AUTH_USER_MODEL)),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to=settings.AUTH_USER_MODEL)),
                 ('liked', models.ManyToManyField(blank=True, default=None, to=settings.AUTH_USER_MODEL)),
+                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='post.post')),
             ],
             options={
-                'verbose_name': 'post',
-                'verbose_name_plural': 'posts',
-                'ordering': ('-created',),
+                'verbose_name': 'comment',
+                'verbose_name_plural': 'comments',
+                'ordering': ('created',),
             },
         ),
         migrations.CreateModel(
-            name='LikePost',
+            name='LikeComment',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('value', models.CharField(choices=[('Like', 'Like'), ('Unlike', 'Unlike')], max_length=10)),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='created date')),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='post.post')),
+                ('comment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='comment.comment')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'verbose_name': 'like post',
-                'verbose_name_plural': 'likes posts',
+                'verbose_name': 'like comment',
+                'verbose_name_plural': 'likes comments',
                 'ordering': ('-created',),
             },
         ),

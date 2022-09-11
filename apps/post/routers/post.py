@@ -17,5 +17,5 @@ method_detail_update_delete = {
 
 urlpatterns = [
     path('', PostViewSet.as_view(method_list_create), name='list_or_create-post'),
-    path('<int:pk>/', PostViewSet.as_view(method_detail_update_delete), name='detail_update_delete-post'),
+    path('<str:public_id>/', PostViewSet.as_view(method_detail_update_delete), name='detail_update_delete-post'),
 ]
