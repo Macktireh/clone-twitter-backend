@@ -14,21 +14,21 @@ User = get_user_model()
 class LikePostSerializer(serializers.ModelSerializer):
 
     authorDetail = UserSerializer(read_only=True, source='user')
-    postId = serializers.IntegerField(write_only=True)
+    postPublicId = serializers.CharField(write_only=True)
 
     class Meta:
         model = LikePost
-        fields = ['value', 'authorDetail', 'post', 'postId', 'created']
+        fields = ['value', 'authorDetail', 'post', 'postPublicId', 'created']
         read_only_fields = ['value', 'post', 'created']
 
     def create(self, validate_data):
-        post_id = validate_data.get('postId')
+        postPublicId = validate_data.get('postPublicId')
         request = self.context.get('request')
         try:
-            post_obj = Post.objects.get(id=int(post_id))
+            post_obj = Post.objects.get(public_id=postPublicId)
         except:
             raise serializers.ValidationError(
-                _("Error 404 response")
+                _("La requête correspondant au post n'existe pas.")
             )
         if request.user in post_obj.liked.all():
             post_obj.liked.remove(request.user)
@@ -38,6 +38,9 @@ class LikePostSerializer(serializers.ModelSerializer):
         if not created:
             if like.value=='Like':
                 like.value='Unlike'
+                post_obj.save()
+                like.delete()
+                return like
             else:
                 like.value='Like'
         else:

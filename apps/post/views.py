@@ -59,4 +59,5 @@ class LikePostViewSet(viewsets.ModelViewSet):
     renderer_classes = [UserRenderer, ]
     queryset = LikePost.objects.all()
     serializer_class = LikePostSerializer
+    http_method_names = ['get', 'post']
     lookup_field = 'public_id'

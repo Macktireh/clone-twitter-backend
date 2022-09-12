@@ -7,14 +7,18 @@ from django.views.static import serve
 from docs.swagger import schema_view
 
 from config.settings.base import ENV
+from apps.home.views import home
+# from apps.post.urls import router
 
 
 urlpatterns = [
-    path('', include('apps.home.urls')),
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/auth/user/', include('apps.authentication.urls')),
     path('api/users/', include('apps.profiles.urls')),
     path('api/posts/', include('apps.post.urls')),
+    # path('api/', include(router.urls)),
+    # path('api/', include('apps.post.ee')),
     path('api/comments/', include('apps.comment.urls')),
     
     re_path(r'^docs(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
