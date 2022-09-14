@@ -30,7 +30,6 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
-        
         try:
             if not kwargs.get('public_id') == request.user.public_id:
                 return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
@@ -41,7 +40,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
             return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
-        # try:
+        try:
             if kwargs.get('public_id') == request.user.public_id:
                 partial = kwargs.pop('partial', False)
                 instance = Profile.objects.get(user=request.user)
@@ -49,15 +48,10 @@ class UserProfileViewSet(viewsets.ModelViewSet):
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
-        # except Exception as e:
-        #     try:
-        #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        #     except Exception as e:
-        #         return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
 
 
 class AllUserProfileViewSet(viewsets.ModelViewSet):
