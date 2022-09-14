@@ -103,7 +103,7 @@ class UserActivationSerializer(serializers.Serializer):
                 )
         else:
             raise serializers.ValidationError(
-                _("Token is not Valid or user is not exist")
+                _("Le jeton n'est pas valide ou a expiré")
             )
         return attrs
 
@@ -195,7 +195,7 @@ class RequestResetPasswordSerializer(serializers.Serializer):
             )
         else:
             raise serializers.ValidationError(
-                {"msg": _("The email address does not exist"), "code": "email_does_not_exist"}
+                {"msg": _("L'adresse e-mail n'existe pas"), "code": "email_does_not_exist"}
             )
         return attrs
 
@@ -250,7 +250,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
             )
         else:
             raise serializers.ValidationError(
-                _("Token is not Valid or Expired")
+                _("Le jeton n'est pas valide ou a expiré")
             )
         return attrs
 
@@ -261,9 +261,12 @@ class LogoutSerializer(serializers.Serializer):
         write_only=True,
         error_messages={
             "blank": "Le champ Mot de passe ne doit pas être vide.",
-            "required": "Le champ id est obligatoire.",
+            "required": "Le champ public_id est obligatoire.",
         },
     )
+
+    class Meta:
+        fields = ['public_id']
 
     def validate(self, attrs):
         try:
@@ -280,7 +283,3 @@ class LogoutSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 _("L'utilisateur ne existe pas !")
             )
-
-
-    class Meta:
-        fields = ['public_id']
