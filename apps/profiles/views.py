@@ -32,12 +32,12 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             if not kwargs.get('public_id') == request.user.public_id:
-                return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'errors': {'message': _("paramètre manquant !")}}, status=status.HTTP_404_NOT_FOUND)
             profile = Profile.objects.get(user=request.user)
             serializer = ProfileSerializer(profile)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
-            return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'errors': {'message': _("Quelque chose a mal tourné !")}}, status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
         try:
@@ -49,9 +49,9 @@ class UserProfileViewSet(viewsets.ModelViewSet):
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'errors': {'message': _("paramètre manquant !")}}, status=status.HTTP_404_NOT_FOUND)
         except:
-            return Response({'error': {'detail': _("Not Found")}}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'errors': {'message': _("Quelque chose a mal tourné !")}}, status=status.HTTP_404_NOT_FOUND)
 
 
 class AllUserProfileViewSet(viewsets.ModelViewSet):

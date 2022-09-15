@@ -25,7 +25,7 @@ class PostViewSet(viewsets.ModelViewSet):
             if public_id:
                 instance = Post.objects.get(public_id=public_id)
                 if not instance.author == request.user:
-                    return Response({'error': {'detail': _("Pas autoriser à modifier !")}}, status=status.HTTP_403_FORBIDDEN)
+                    return Response({'errors': {'message': _("Vous n'êtes pas autoriser pour cette action.")}}, status=status.HTTP_403_FORBIDDEN)
                 partial = kwargs.pop('partial', False)
                 serializer = PostSerializer(instance, data=request.data, partial=partial)
                 if serializer.is_valid(raise_exception=True):
@@ -34,7 +34,7 @@ class PostViewSet(viewsets.ModelViewSet):
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({'errors': {'message': _("Indformation incomplete !")}}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'errors': {'message': _("paramètre manquant !")}}, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response({'errors': {'message': _("Quelque chose a mal tourné !")}}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -44,11 +44,11 @@ class PostViewSet(viewsets.ModelViewSet):
             if public_id:
                 instance = Post.objects.get(public_id=public_id)
                 if not instance.author == request.user:
-                    return Response({'error': {'detail': _("Pas autoriser à modifier !")}}, status=status.HTTP_403_FORBIDDEN)
+                    return Response({'errors': {'message': _("Vous n'êtes pas autoriser pour cette action.")}}, status=status.HTTP_403_FORBIDDEN)
                 self.perform_destroy(instance)
                 return Response(status=status.HTTP_204_NO_CONTENT)
             else:
-                return Response({'errors': {'message': _("Indformation incomplete !")}}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'errors': {'message': _("paramètre manquant !")}}, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response({'errors': {'message': _("Quelque chose a mal tourné !")}}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
