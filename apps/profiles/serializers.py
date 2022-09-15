@@ -5,9 +5,11 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from apps.profiles.models import Profile
+from apps.utils.response import response_messages
 
 
 User = get_user_model()
+res = response_messages('fr')
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -48,6 +50,4 @@ class ProfileSerializer(serializers.ModelSerializer):
             instance.save()
             return instance
         except:
-            raise serializers.ValidationError(
-                _("user is empty")
-            )
+            raise serializers.ValidationError(res["USER_DOES_NOT_EXIST"])

@@ -6,9 +6,11 @@ from rest_framework import serializers
 from apps.post.models import LikePost, Post
 from apps.profiles.serializers import UserSerializer
 from apps.comment.serializers import CommentPostSerializer
+from apps.utils.response import response_messages
 
 
 User = get_user_model()
+res = response_messages('fr')
 
 
 class LikePostSerializer(serializers.ModelSerializer):
@@ -25,11 +27,11 @@ class LikePostSerializer(serializers.ModelSerializer):
         postPublicId = validate_data.get('postPublicId')
         request = self.context.get('request')
         try:
-            post_obj = Post.objects.get(public_id=postPublicId)
+            post_obj = Post.objects.get(public_id=postPublicId) or None
+            if post_obj is None:
+                raise serializers.ValidationError(res["POST_NOT_FOUND"])
         except:
-            raise serializers.ValidationError(
-                _("La requête correspondant au post n'existe pas.")
-            )
+            raise serializers.ValidationError(res["SOMETHING_WENT_WRONG"])
         if request.user in post_obj.liked.all():
             post_obj.liked.remove(request.user)
         else:
@@ -74,6 +76,6 @@ class PostSerializer(serializers.ModelSerializer):
                 new_post = Post.objects.create(author=request.user, body=body, image=image)
                 return new_post
             except:
-                raise serializers.ValidationError({'message': _("Quelque chose a mal tourné !")})
+                raise serializers.ValidationError(res["SOMETHING_WENT_WRONG"])
         else:
-            raise serializers.ValidationError({'message': _("Le champ body ou image ne doit pas être vide.")})
+            raise serializers.ValidationError(res["BODY_OR_IMAGE_FIELD_MUST_NOT_EMPTY"])

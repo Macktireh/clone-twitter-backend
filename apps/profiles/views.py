@@ -6,12 +6,14 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
 
-from apps.utils.renderers import UserRenderer
 from apps.profiles.models import Profile
 from apps.profiles.serializers import ProfileSerializer
+from apps.utils.renderers import UserRenderer
+from apps.utils.response import response_messages
 
 
 User = get_user_model()
+res = response_messages('fr')
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
@@ -32,12 +34,12 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             if not kwargs.get('public_id') == request.user.public_id:
-                return Response({'errors': {'message': _("paramètre manquant !")}}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_404_NOT_FOUND)
             profile = Profile.objects.get(user=request.user)
             serializer = ProfileSerializer(profile)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
-            return Response({'errors': {'message': _("Quelque chose a mal tourné !")}}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
         try:
@@ -49,9 +51,9 @@ class UserProfileViewSet(viewsets.ModelViewSet):
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            return Response({'errors': {'message': _("paramètre manquant !")}}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_404_NOT_FOUND)
         except:
-            return Response({'errors': {'message': _("Quelque chose a mal tourné !")}}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_404_NOT_FOUND)
 
 
 class AllUserProfileViewSet(viewsets.ModelViewSet):

@@ -8,14 +8,13 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from apps.authentication.tokens import generate_token
+from apps.authentication.tokens import TokenGenerator
 from apps.authentication.validators import email_validation, password_validation
 from apps.utils.email import send_email
 from apps.utils.response import error_messages, response_messages
 
 
 User = get_user_model()
-
 res = response_messages('fr')
 
 
@@ -68,9 +67,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         password = attrs.get('password')
         confirm_password = attrs.get('confirmPassword')
         if password and confirm_password and password != confirm_password:
-            raise serializers.ValidationError(
-                res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"]
-            )
+            raise serializers.ValidationError(res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"])
         return attrs
 
     def create(self, validate_data):
@@ -94,7 +91,7 @@ class UserActivationSerializer(serializers.Serializer):
             user = User.objects.get(pk=uid)
         except Exception as e:
             user = None
-        if user and generate_token.check_token(user, token):
+        if user and TokenGenerator().check_token(user, token):
             if not user.is_verified_email:
                 user.is_verified_email = True
                 user.save()
@@ -105,9 +102,7 @@ class UserActivationSerializer(serializers.Serializer):
                     domain=settings.DOMAIN_FRONTEND
                 )
         else:
-            raise serializers.ValidationError(
-                _("Le jeton n'est pas valide ou a expiré")
-            )
+            raise serializers.ValidationError(res["TOKEN_IS_NOT_VALID_OR_HAS_EXPIRED"])
         return attrs
 
 
@@ -162,9 +157,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
         confirm_password = attrs.get('confirm_password')
         user = self.context.get('user')
         if password != confirm_password:
-            raise serializers.ValidationError(
-                res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"]
-            )
+            raise serializers.ValidationError(res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"])
         user.set_password(password)
         user.save()
         return attrs
@@ -197,9 +190,7 @@ class RequestResetPasswordSerializer(serializers.Serializer):
                 domain=settings.DOMAIN_FRONTEND
             )
         else:
-            raise serializers.ValidationError(
-                {"msg": _("L'adresse e-mail n'existe pas"), "code": "email_does_not_exist"}
-            )
+            raise serializers.ValidationError(res["USER_DOES_NOT_EXIST"])
         return attrs
 
 
@@ -234,9 +225,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
         uid = self.context.get('uid')
         token = self.context.get('token')
         if password != confirm_password:
-            raise serializers.ValidationError(
-                res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"]
-            )
+            raise serializers.ValidationError(res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"])
         try:
             uid = force_str(urlsafe_base64_decode(uid))
             user = User.objects.get(pk=uid)
@@ -252,9 +241,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
                 domain=settings.DOMAIN_FRONTEND
             )
         else:
-            raise serializers.ValidationError(
-                _("Le jeton n'est pas valide ou a expiré")
-            )
+            raise serializers.ValidationError(res["TOKEN_IS_NOT_VALID_OR_HAS_EXPIRED"])
         return attrs
 
 
@@ -283,6 +270,4 @@ class LogoutSerializer(serializers.Serializer):
             user.save()
             return attrs
         except:
-            raise serializers.ValidationError(
-                _("L'utilisateur ne existe pas !")
-            )
+            raise serializers.ValidationError(res["USER_DOES_NOT_EXIST"])

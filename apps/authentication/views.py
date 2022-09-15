@@ -7,13 +7,15 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from apps.utils.renderers import UserRenderer
-from apps.authentication.tokens import get_tokens_for_user, generate_token
-from apps.utils.email import send_email
 from apps.authentication import serializers
+from apps.authentication.tokens import get_tokens_for_user, TokenGenerator
+from apps.utils.email import send_email
+from apps.utils.renderers import UserRenderer
+from apps.utils.response import response_messages
 
 
 User = get_user_model()
+res = response_messages('fr')
 
 
 class UserSignupView(viewsets.ModelViewSet):
@@ -26,7 +28,7 @@ class UserSignupView(viewsets.ModelViewSet):
         serializer = serializers.UserSignupSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
-            token = generate_token.make_token(user)
+            token = TokenGenerator().make_token(user)
             send_email(
                 subject=f"Activation du compte sur {settings.DOMAIN_FRONTEND}", 
                 template_name="authentication/mail/activate.html", 
@@ -35,7 +37,7 @@ class UserSignupView(viewsets.ModelViewSet):
                 domain=settings.DOMAIN_FRONTEND
             )
             return Response(
-                {'msg': _("Registration Successful")},
+                {'message': res["SUCCESSFUL_REGISTRATION"]},
                 status=status.HTTP_201_CREATED
             )
         return Response(
@@ -54,7 +56,7 @@ class UserActivationView(viewsets.ModelViewSet):
         serializer = serializers.UserActivationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': _("Your account has been successfully created and activated!")},
+                {'message': res["SUCCESSFUL_ACTIVATION_ACCOUNT"]},
                 status=status.HTTP_200_OK
             )
         return Response(
@@ -80,17 +82,17 @@ class UserLoginView(viewsets.ModelViewSet):
                 if _user.is_verified_email:
                     token = get_tokens_for_user(user)
                     return Response(
-                        {'msg': _("Login Success"), "token": token},
+                        {'message': res["LOGIN_SUCCESS"], "token": token},
                         status=status.HTTP_200_OK
                     )
                 else:
                     return Response(
-                        {'errors': _("Veuillez confirmer votre adresse e-mail !")},
+                        {'errors': res["CONFIRM_YOUR_ADDRESS_EMAIL"]},
                         status=status.HTTP_400_BAD_REQUEST
                     )
             else:
                 return Response(
-                    {'errors': _("L'email ou le mot de passe n'est pas valide !")},
+                    {'errors': res["EMAIL_OR_PASSWORD_IS_NOT_VALID"]},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         return Response(
@@ -110,7 +112,7 @@ class UserChangePasswordView(viewsets.ModelViewSet):
         serializer = serializers.UserChangePasswordSerializer(data=request.data, context={'user': request.user})
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': _("Password Changed Successfully")},
+                {'message': res["PASSWORD_CHANGED_SUCCESSFULLY"]},
                 status=status.HTTP_200_OK
             )
         return Response(
@@ -129,7 +131,7 @@ class RequestResetPasswordView(viewsets.ModelViewSet):
         serializer = serializers.RequestResetPasswordSerializer(data=request.data, context={'current_site': get_current_site(request)})
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': _("Password Reset link send. Please check your Email"), "code": "reset_link_sent_email"},
+                {'message': res["PASSWORD_RESET_LINK_SEND"]},
                 status=status.HTTP_200_OK
             )
         return Response(
@@ -150,7 +152,7 @@ class UserResetPasswordView(viewsets.ModelViewSet):
         serializer = serializers.UserResetPasswordSerializer(data=request.data, context={'uid': uidb64, 'token': token})
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': _("Password Reset Successfully")},
+                {'message': res["PASSWORD_RESET_SUCCESSFULLY"]},
                 status=status.HTTP_200_OK
             )
         return Response(
@@ -170,7 +172,7 @@ class LogoutView(viewsets.ModelViewSet):
         serializer = serializers.LogoutSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             return Response(
-                {'msg': _("Logout Successfully")},
+                {'message': res["LOGOUT_SUCCESSFULLY"]},
                 status=status.HTTP_200_OK
             )
         return Response(
