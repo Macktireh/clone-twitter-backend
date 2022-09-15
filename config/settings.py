@@ -7,7 +7,7 @@ from datetime import timedelta
 from pkg_resources import DEVELOP_DIST
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 load = load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Variable environment local or production
@@ -93,6 +93,29 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+
+TYPE_DATABASE = os.environ.get('TYPE_DATABASE', 'sqlite3')
+
+# Database
+if TYPE_DATABASE == 'sqlite3':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        f'{TYPE_DATABASE}': {
+            'ENGINE': os.environ.get("ENGINE"),
+            'NAME': os.environ.get("DB"),
+            'USER': os.environ.get("USERNAME"),
+            'PASSWORD': os.environ.get("PASSWORD"),
+            'HOST': os.environ.get("HOST"),
+            'PORT': os.environ.get("PORT"),
+        },
+    }
 
 
 # Config rest_framework
