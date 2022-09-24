@@ -12,6 +12,7 @@ from apps.home.views import home
 
 urlpatterns = [
     path('', home, name='home'),
+    path('admin/docs', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('api/auth/user/', include('apps.authentication.urls')),
     path('api/users/', include('apps.profiles.urls')),

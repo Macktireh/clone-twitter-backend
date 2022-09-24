@@ -13,7 +13,7 @@ def send_async_email(eamil):
     try:
         eamil.send()
     except ConnectionRefusedError:
-        raise ValueError("[MAIL SERVER] not working")
+        raise ValueError("[EMAIL SERVER] not working")
 
 def send_email(subject, template_name, user, token=None, domain=None, from_email=settings.EMAIL_HOST_USER):
     app, ext = template_name.split('/')[0], template_name.split('.')[-1]

@@ -25,12 +25,12 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     http_method_names = ['get', 'put', 'patch']
     lookup_field = 'public_id'
-
+    
     def list(self, request):
         profile = Profile.objects.get(user=request.user)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
     def retrieve(self, request, *args, **kwargs):
         try:
             if not kwargs.get('public_id') == request.user.public_id:
@@ -39,8 +39,8 @@ class UserProfileViewSet(viewsets.ModelViewSet):
             serializer = ProfileSerializer(profile)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
-            return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_404_NOT_FOUND)
-
+            return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
     def update(self, request, *args, **kwargs):
         try:
             if kwargs.get('public_id') == request.user.public_id:
@@ -53,7 +53,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_404_NOT_FOUND)
         except:
-            return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class AllUserProfileViewSet(viewsets.ModelViewSet):
@@ -64,8 +64,8 @@ class AllUserProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.select_related('user').all()
     serializer_class = ProfileSerializer
     http_method_names = ['get']
-
+    
     def list(self, request):
-        users = Profile.objects.get_all_profiles_exclude_me(request.user)
+        users = Profile.objects.get_all_profiles(request.user)
         serializer = ProfileSerializer(users, many=True)
-        return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)

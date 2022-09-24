@@ -24,11 +24,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
 
-    user = UserSerializer(required=True)
-    pseudo = serializers.CharField(validators=[UniqueValidator(queryset=Profile.objects.all(), lookup='iexact')])
-    birthDate = serializers.DateField(source='birth_date')
-    profilePicture = serializers.ImageField(source='profile_picture')
-    coverPicture = serializers.ImageField(source='cover_picture')
+    user = UserSerializer(required=False)
+    pseudo = serializers.CharField(validators=[UniqueValidator(queryset=Profile.objects.all(), lookup='iexact')], required=False)
+    birthDate = serializers.DateField(source='birth_date', required=False)
+    profilePicture = serializers.ImageField(source='profile_picture', required=False)
+    coverPicture = serializers.ImageField(source='cover_picture', required=False)
 
     class Meta:
         model = Profile

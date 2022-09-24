@@ -3,7 +3,7 @@ from django.db.models import Q
 
 
 class ProfileManager(models.Manager):
-    def get_all_profiles_exclude_me(self, me):
+    def get_all_profiles(self, me):
         """        
         me : utilisateur connecté
 
@@ -12,6 +12,7 @@ class ProfileManager(models.Manager):
         """
         from apps.profiles.models import Profile
         
+        # profiles = Profile.objects.select_related('user').filter(user__is_verified_email=True)
         profiles = Profile.objects.select_related('user').filter(user__is_verified_email=True).exclude(user=me)
         return profiles
     

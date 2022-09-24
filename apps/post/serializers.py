@@ -17,11 +17,12 @@ class LikePostSerializer(serializers.ModelSerializer):
 
     authorDetail = UserSerializer(read_only=True, source='user')
     postPublicId = serializers.CharField(write_only=True)
+    PublicId = serializers.CharField(source='post.public_id', read_only=True)
 
     class Meta:
         model = LikePost
-        fields = ['value', 'authorDetail', 'post', 'postPublicId', 'created']
-        read_only_fields = ['value', 'post', 'created']
+        fields = ['value', 'authorDetail', 'PublicId', 'postPublicId', 'created']
+        read_only_fields = ['value', 'created']
 
     def create(self, validate_data):
         postPublicId = validate_data.get('postPublicId')
@@ -38,11 +39,8 @@ class LikePostSerializer(serializers.ModelSerializer):
             post_obj.liked.add(request.user)
         like, created = LikePost.objects.get_or_create(user=request.user, post=post_obj)
         if not created:
-            if like.value=='Like':
-                like.value='Unlike'
-                post_obj.save()
-                like.delete()
-                return like
+            if like.value == 'Like':
+                like.value = 'Unlike'
             else:
                 like.value='Like'
         else:
@@ -70,7 +68,6 @@ class PostSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
         body = validate_data.get('body', None)
         image = validate_data.get('image', None)
-        print(validate_data)
         if body or image:
             try:
                 new_post = Post.objects.create(author=request.user, body=body, image=image)
