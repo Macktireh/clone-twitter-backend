@@ -64,3 +64,16 @@ class LikePostViewSet(viewsets.ModelViewSet):
     serializer_class = LikePostSerializer
     http_method_names = ['get', 'post']
     lookup_field = 'public_id'
+
+class ListPostsLikesViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [IsAuthenticated, ]
+    renderer_classes = [UserRenderer, ]
+    queryset = Post.objects.select_related('author').all()
+    serializer_class = PostSerializer
+    http_method_names = ['get']
+    
+    def list(self, request):
+        posts = Post.objects.get_posts_like(request.user)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

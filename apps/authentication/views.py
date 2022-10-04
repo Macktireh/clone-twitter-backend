@@ -18,14 +18,14 @@ User = get_user_model()
 res = response_messages('fr')
 
 
-class UserSignupView(viewsets.ModelViewSet):
+class SignupView(viewsets.ModelViewSet):
 
     renderer_classes = [UserRenderer]
-    serializer_class = serializers.UserSignupSerializer
+    serializer_class = serializers.SignupSerializer
     http_method_names = ['post']
 
     def create(self, request, *args, **kwargs):
-        serializer = serializers.UserSignupSerializer(data=request.data)
+        serializer = serializers.SignupSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             token = TokenGenerator().make_token(user)
@@ -46,14 +46,14 @@ class UserSignupView(viewsets.ModelViewSet):
         )
 
 
-class UserActivationView(viewsets.ModelViewSet):
+class ActivationView(viewsets.ModelViewSet):
 
     renderer_classes = [UserRenderer]
-    serializer_class = serializers.UserActivationSerializer
+    serializer_class = serializers.ActivationSerializer
     http_method_names = ['post']
 
     def create(self, request, *args, **kwargs):
-        serializer = serializers.UserActivationSerializer(data=request.data)
+        serializer = serializers.ActivationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             return Response(
                 {'message': res["SUCCESSFUL_ACTIVATION_ACCOUNT"]},
@@ -65,14 +65,14 @@ class UserActivationView(viewsets.ModelViewSet):
         )
 
 
-class UserLoginView(viewsets.ModelViewSet):
+class LoginView(viewsets.ModelViewSet):
 
     renderer_classes = [UserRenderer]
-    serializer_class = serializers.UserLoginSerializer
+    serializer_class = serializers.LoginSerializer
     http_method_names = ['post']
 
     def create(self, request, *args, **kwargs):
-        serializer = serializers.UserLoginSerializer(data=request.data)
+        serializer = serializers.LoginSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.data.get('email')
             password = serializer.data.get('password')

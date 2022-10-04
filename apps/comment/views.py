@@ -55,6 +55,8 @@ class CommentPostViewSet(viewsets.ModelViewSet):
             return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
+
 class LikeCommentViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated, ]

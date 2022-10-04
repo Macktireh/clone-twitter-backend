@@ -1,7 +1,10 @@
+from typing import Any
+
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
+from apps.comment.models import Comment
 
 from apps.post.models import LikePost, Post
 from apps.profiles.serializers import UserSerializer
@@ -26,7 +29,9 @@ class LikePostSerializer(serializers.ModelSerializer):
 
     def create(self, validate_data):
         postPublicId = validate_data.get('postPublicId')
-        request = self.context.get('request')
+        request: Any = self.context.get('request')
+        if not postPublicId or postPublicId is None:
+            raise serializers.ValidationError(res["MISSING_PARAMETER"])
         try:
             post_obj = Post.objects.get(public_id=postPublicId) or None
             if post_obj is None:
@@ -58,14 +63,18 @@ class PostSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False)
     liked = UserSerializer(read_only=True, many=True)
     comments = CommentPostSerializer(read_only=True, many=True)
+    numberComments = serializers.SerializerMethodField()
+
+    def get_numberComments(self, obj):
+        return Comment.objects.filter(post=obj).count()
 
     class Meta:
         model = Post
-        fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'comments']
+        fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'comments', 'numberComments']
         read_only_fields = ['author', 'is_updated', 'created', 'updated', 'liked', 'comments']
 
     def create(self, validate_data):
-        request = self.context.get('request', None)
+        request: Any = self.context.get('request', None)
         body = validate_data.get('body', None)
         image = validate_data.get('image', None)
         if body or image:

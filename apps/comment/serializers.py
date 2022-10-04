@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
@@ -29,9 +31,11 @@ class LikeCommentSerializer(serializers.ModelSerializer):
         fields = ['value', 'authorDetail', 'comment', 'commentPublicId']
         read_only_fields = ['value', 'comment']
 
-    def create(self, validate_data):
-        commentPublicId = validate_data.get('commentPublicId')
-        request = self.context.get('request')
+    def create(self, validate_data) -> LikeComment:
+        commentPublicId = validate_data.get('commentPublicId', None)
+        request: Any = self.context.get('request')
+        if not commentPublicId or commentPublicId is None:
+            raise serializers.ValidationError(res["MISSING_PARAMETER"])
         try:
             comment_obj = Comment.objects.get(public_id=commentPublicId) or None
             if comment_obj is None:
@@ -68,18 +72,22 @@ class CommentPostSerializer(serializers.ModelSerializer):
             "required": error_messages('required', 'fr', 'postPublicId'),
         },
     )
-    commentPublicId = serializers.CharField(read_only=True, source='public_id')
+    postPublicIdRead = serializers.CharField(
+        read_only=True,
+        source='post.public_id',
+    )
+    publicId = serializers.CharField(read_only=True, source='public_id')
     message = serializers.CharField(required=False)
     image = serializers.ImageField(required=False)
     liked = UserSerializer(read_only=True, many=True)
 
     class Meta:
         model = Comment
-        fields = ['commentPublicId', 'authorDetail', 'postPublicId', 'message', 'image', 'is_updated', 'created', 'updated', 'liked']
+        fields = ['publicId', 'postPublicIdRead', 'authorDetail', 'postPublicId', 'message', 'image', 'is_updated', 'created', 'updated', 'liked']
         read_only_fields = ['author', 'is_updated', 'created', 'updated', 'liked', 'comments']
 
-    def create(self, validate_data):
-        request = self.context.get('request', None)
+    def create(self, validate_data) -> Comment:
+        request: Any = self.context.get('request', None)
         postPublicId = validate_data.get('postPublicId', None)
         message = validate_data.get('message', None)
         image = validate_data.get('image', None)

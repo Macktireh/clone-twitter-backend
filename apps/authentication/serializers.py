@@ -18,7 +18,7 @@ User = get_user_model()
 res = response_messages('fr')
 
 
-class UserSignupSerializer(serializers.ModelSerializer):
+class SignupSerializer(serializers.ModelSerializer):
 
     email = serializers.CharField(
         validators=[email_validation],
@@ -54,7 +54,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         style={'input_type': 'password'}, 
         write_only=True,
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Comfirmation mot de passe'),
+            "blank": error_messages('blank', 'fr', 'Confirmation mot de passe'),
             "required": error_messages('required', 'fr', 'Confirmation mot de passe'),
         },
     )
@@ -75,7 +75,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validate_data)
 
 
-class UserActivationSerializer(serializers.Serializer):
+class ActivationSerializer(serializers.Serializer):
 
     uidb64 = serializers.CharField(write_only=True)
     token = serializers.CharField(write_only=True)
@@ -106,7 +106,7 @@ class UserActivationSerializer(serializers.Serializer):
         return attrs
 
 
-class UserLoginSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.ModelSerializer):
 
     email = serializers.EmailField(
         max_length=255,
