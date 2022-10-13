@@ -62,7 +62,7 @@ class PostSerializer(serializers.ModelSerializer):
     body = serializers.CharField(required=False)
     image = serializers.ImageField(required=False)
     liked = UserSerializer(read_only=True, many=True)
-    comments = CommentPostSerializer(read_only=True, many=True)
+    # comments = CommentPostSerializer(read_only=True, many=True)
     numberComments = serializers.SerializerMethodField()
 
     def get_numberComments(self, obj):
@@ -70,7 +70,8 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'comments', 'numberComments']
+        fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'numberComments']
+        # fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'comments', 'numberComments']
         read_only_fields = ['author', 'is_updated', 'created', 'updated', 'liked', 'comments']
 
     def create(self, validate_data):

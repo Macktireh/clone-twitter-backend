@@ -7,7 +7,6 @@ from django.views.static import serve
 from docs.swagger import schema_view
 
 from apps.home.views import home
-# from apps.post.urls import router
 
 
 urlpatterns = [
@@ -17,12 +16,10 @@ urlpatterns = [
     path('api/auth/user/', include('apps.authentication.urls')),
     path('api/users/', include('apps.profiles.urls')),
     path('api/posts/', include('apps.post.urls')),
-    # path('api/', include(router.urls)),
-    # path('api/', include('apps.post.ee')),
     path('api/comments/', include('apps.comment.urls')),
     
     re_path(r'^docs(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    re_path(r'^docs/api/$', schema_view.with_ui('swagger', cache_timeout=0), name='docs-api'),
+    re_path(r'^api/docs/$', schema_view.with_ui('swagger', cache_timeout=0), name='docs-api'),
     # re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 

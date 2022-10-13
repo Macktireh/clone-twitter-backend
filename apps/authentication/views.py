@@ -2,15 +2,14 @@ from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import gettext as _
+from django.utils import timezone
 
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-from rest_framework.permissions import IsAuthenticated
 
 from apps.authentication import serializers
 from apps.authentication.tokens import get_tokens_for_user, TokenGenerator
 from apps.utils.email import send_email
-from apps.utils.renderers import UserRenderer
 from apps.utils.response import response_messages
 
 
@@ -20,7 +19,7 @@ res = response_messages('fr')
 
 class SignupView(viewsets.ModelViewSet):
 
-    renderer_classes = [UserRenderer]
+    permission_classes = []
     serializer_class = serializers.SignupSerializer
     http_method_names = ['post']
 
@@ -48,7 +47,7 @@ class SignupView(viewsets.ModelViewSet):
 
 class ActivationView(viewsets.ModelViewSet):
 
-    renderer_classes = [UserRenderer]
+    permission_classes = []
     serializer_class = serializers.ActivationSerializer
     http_method_names = ['post']
 
@@ -67,7 +66,7 @@ class ActivationView(viewsets.ModelViewSet):
 
 class LoginView(viewsets.ModelViewSet):
 
-    renderer_classes = [UserRenderer]
+    permission_classes = []
     serializer_class = serializers.LoginSerializer
     http_method_names = ['post']
 
@@ -78,8 +77,9 @@ class LoginView(viewsets.ModelViewSet):
             password = serializer.data.get('password')
             user = authenticate(email=email, password=password)
             if user is not None:
-                _user = User.objects.get(email=user.email)
-                if _user.is_verified_email:
+                if user.is_verified_email:
+                    user.last_login = timezone.now()
+                    user.save()
                     token = get_tokens_for_user(user)
                     return Response(
                         {'message': res["LOGIN_SUCCESS"], "token": token},
@@ -103,8 +103,6 @@ class LoginView(viewsets.ModelViewSet):
 
 class UserChangePasswordView(viewsets.ModelViewSet):
 
-    permission_classes = [IsAuthenticated]
-    renderer_classes = [UserRenderer]
     serializer_class = serializers.UserChangePasswordSerializer
     http_method_names = ['post']
 
@@ -123,7 +121,7 @@ class UserChangePasswordView(viewsets.ModelViewSet):
 
 class RequestResetPasswordView(viewsets.ModelViewSet):
 
-    renderer_classes = [UserRenderer]
+    permission_classes = []
     serializer_class = serializers.RequestResetPasswordSerializer
     http_method_names = ['post']
 
@@ -142,7 +140,7 @@ class RequestResetPasswordView(viewsets.ModelViewSet):
 
 class UserResetPasswordView(viewsets.ModelViewSet):
 
-    renderer_classes = [UserRenderer]
+    permission_classes = []
     serializer_class = serializers.UserResetPasswordSerializer
     http_method_names = ['post']
 
@@ -163,7 +161,7 @@ class UserResetPasswordView(viewsets.ModelViewSet):
 
 class LogoutView(viewsets.ModelViewSet):
 
-    renderer_classes = [UserRenderer]
+    permission_classes = []
     serializer_class = serializers.LogoutSerializer
     http_method_names = ['post']
     lookup_field = 'public_id'

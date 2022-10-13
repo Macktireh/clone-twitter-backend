@@ -7,7 +7,7 @@ from apps.utils.response import error_messages, response_messages
 User = get_user_model()
 res = response_messages('fr')
 
-class UserSignupSerializerTests(TestCase):
+class SignupSerializerTests(TestCase):
 
     def setUp(self):
         self.user_attributes = {

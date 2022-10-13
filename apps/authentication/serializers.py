@@ -144,7 +144,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
         style={'input_type': 'password'}, 
         write_only=True,
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Comfirmation mot de passe'),
+            "blank": error_messages('blank', 'fr', 'Confirmation mot de passe'),
             "required": error_messages('required', 'fr', 'Confirmation mot de passe'),
         },
     )
@@ -190,7 +190,7 @@ class RequestResetPasswordSerializer(serializers.Serializer):
                 domain=settings.DOMAIN_FRONTEND
             )
         else:
-            raise serializers.ValidationError(res["USER_DOES_NOT_EXIST"])
+            raise serializers.ValidationError(res["EMAIL_ADDRESS_DOES_NOT_EXIST"])
         return attrs
 
 

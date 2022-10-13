@@ -2,10 +2,8 @@ from django.utils.translation import gettext as _
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
-from apps.utils.renderers import UserRenderer
 from apps.post.models import Post, LikePost
 from apps.post.serializers import PostSerializer, LikePostSerializer
 from apps.utils.response import response_messages
@@ -15,8 +13,6 @@ res = response_messages('fr')
 
 class PostViewSet(viewsets.ModelViewSet):
 
-    permission_classes = [IsAuthenticated, ]
-    renderer_classes = [UserRenderer, ]
     parser_classes = [JSONParser, FormParser, MultiPartParser, ]
     queryset = Post.objects.select_related('author').all()
     serializer_class = PostSerializer
@@ -58,8 +54,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class LikePostViewSet(viewsets.ModelViewSet):
 
-    permission_classes = [IsAuthenticated, ]
-    renderer_classes = [UserRenderer, ]
     queryset = LikePost.objects.all()
     serializer_class = LikePostSerializer
     http_method_names = ['get', 'post']
@@ -67,8 +61,6 @@ class LikePostViewSet(viewsets.ModelViewSet):
 
 class ListPostsLikesViewSet(viewsets.ModelViewSet):
 
-    permission_classes = [IsAuthenticated, ]
-    renderer_classes = [UserRenderer, ]
     queryset = Post.objects.select_related('author').all()
     serializer_class = PostSerializer
     http_method_names = ['get']

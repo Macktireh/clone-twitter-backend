@@ -18,6 +18,7 @@ res = response_messages('fr')
 class LikeCommentSerializer(serializers.ModelSerializer):
 
     authorDetail = UserSerializer(read_only=True, source='user')
+    PublicId = serializers.CharField(source='comment.public_id', read_only=True)
     commentPublicId = serializers.CharField(
         write_only=True,
         error_messages={
@@ -28,7 +29,7 @@ class LikeCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LikeComment
-        fields = ['value', 'authorDetail', 'comment', 'commentPublicId']
+        fields = ['value', 'authorDetail', 'PublicId', 'commentPublicId']
         read_only_fields = ['value', 'comment']
 
     def create(self, validate_data) -> LikeComment:
@@ -50,9 +51,6 @@ class LikeCommentSerializer(serializers.ModelSerializer):
         if not created:
             if like.value=='Like':
                 like.value='Unlike'
-                comment_obj.save()
-                like.delete()
-                return like
             else:
                 like.value='Like'
         else:
