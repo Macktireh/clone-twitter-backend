@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
+from apps.post.managers import PostManager
 
 from apps.utils.functions import rename_img_post, uid_generator
 
@@ -18,6 +19,8 @@ class Post(models.Model):
     updated = models.DateTimeField(_("updated date"), auto_now=True)
     liked = models.ManyToManyField(User, blank=True, default=None)
     is_updated = models.BooleanField(_("is updated"), default=False)
+    
+    objects = PostManager()
 
     class Meta:
         verbose_name = _('post')

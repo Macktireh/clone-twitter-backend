@@ -3,12 +3,10 @@ from django.utils.translation import gettext as _
 
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
 
 from apps.profiles.models import Profile
 from apps.profiles.serializers import ProfileSerializer
-from apps.utils.renderers import UserRenderer
 from apps.utils.response import response_messages
 
 
@@ -18,8 +16,6 @@ res = response_messages('fr')
 
 class UserProfileViewSet(viewsets.ModelViewSet):
 
-    permission_classes = (IsAuthenticated,)
-    renderer_classes = (UserRenderer,)
     parser_classes = (JSONParser, FormParser, MultiPartParser,)
     queryset = Profile.objects.select_related('user').all()
     serializer_class = ProfileSerializer
@@ -58,8 +54,6 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
 class AllUserProfileViewSet(viewsets.ModelViewSet):
 
-    permission_classes = (IsAuthenticated,)
-    renderer_classes = (UserRenderer,)
     parser_classes = (JSONParser, FormParser, MultiPartParser,)
     queryset = Profile.objects.select_related('user').all()
     serializer_class = ProfileSerializer

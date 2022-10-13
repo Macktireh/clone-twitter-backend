@@ -17,5 +17,5 @@ patchUpdate
 urlpatterns = [
     path('me/', views.UserProfileViewSet.as_view(getList), name='getCurrentUser'),
     path('me/<str:public_id>/', views.UserProfileViewSet.as_view({**getRetrieve, **patchUpdate}), name='RetrieveUpdateCurrentUser'),
-    path('all/', views.AllUserProfileViewSet.as_view(getList), name='getAllUser'),
+    path('', views.AllUserProfileViewSet.as_view(getList), name='getAllUser'),
 ]
