@@ -1,27 +1,39 @@
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from apps.profiles.models import Profile
-from apps.account.serializers import UserSerializer
+from apps.utils.response import response_messages
+
+
+User = get_user_model()
+res = response_messages('fr')
+
+class UserSerializer(serializers.ModelSerializer):
+
+    # firstName = serializers.CharField(source='first_name')
+    # lastName = serializers.CharField(source='last_name')
+
+    class Meta:
+        model = User
+        fields = ['public_id', 'first_name', 'last_name']
+        read_only_fields = ['public_id']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
 
-    user = UserSerializer(required=True)
-    pseudo = serializers.CharField(validators=[UniqueValidator(queryset=Profile.objects.all(), lookup='iexact')])
-    birthDate = serializers.DateField(source='birth_date')
-    coverPicture = serializers.ImageField(source='cover_picture')
+    user = UserSerializer(required=False)
+    pseudo = serializers.CharField(validators=[UniqueValidator(queryset=Profile.objects.all(), lookup='iexact')], required=False)
+    birthDate = serializers.DateField(source='birth_date', required=False)
+    profilePicture = serializers.ImageField(source='profile_picture', required=False)
+    coverPicture = serializers.ImageField(source='cover_picture', required=False)
 
     class Meta:
         model = Profile
-        exclude = ['id', 'birth_date', 'cover_picture', 'created']
-        extra_kwargs = {
-            'uid': {'read_only': True},
-            'updated': {'read_only': True},
-            'following': {'read_only': True},
-        }
+        exclude = ['id', 'birth_date', 'profile_picture', 'cover_picture']
+        read_only_fields = ['created', 'updated']
 
     def update(self, instance, validated_data):
         try:
@@ -33,11 +45,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             instance.pseudo = validated_data.get('pseudo', instance.pseudo)
             instance.bio = validated_data.get('bio', instance.bio)
             instance.birth_date = validated_data.get('birth_date', instance.birth_date)
-            instance.picture = validated_data.get('picture', instance.picture)
+            instance.profile_picture = validated_data.get('profile_picture', instance.profile_picture)
             instance.cover_picture = validated_data.get('cover_picture', instance.cover_picture)
             instance.save()
             return instance
         except:
-            raise serializers.ValidationError(
-                _("user is empty")
-            )
+            raise serializers.ValidationError(res["USER_DOES_NOT_EXIST"])

@@ -1,47 +1,51 @@
+from typing import Any
+
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
+from apps.comment.models import Comment
 
-from apps.post.models import LikePost, Post, Comment
-from apps.account.serializers import UserSerializer
+from apps.post.models import LikePost, Post
+from apps.profiles.serializers import UserSerializer
+from apps.comment.serializers import CommentPostSerializer
+from apps.utils.response import response_messages
 
 
 User = get_user_model()
+res = response_messages('fr')
 
 
 class LikePostSerializer(serializers.ModelSerializer):
 
-    author_detail = UserSerializer(read_only=True, source='user')
-    postId = serializers.IntegerField(write_only=True)
+    authorDetail = UserSerializer(read_only=True, source='user')
+    postPublicId = serializers.CharField(write_only=True)
+    PublicId = serializers.CharField(source='post.public_id', read_only=True)
 
     class Meta:
         model = LikePost
-        fields = ['id', 'value', 'author_detail', 'post', 'postId', 'created']
-        extra_kwargs = {
-            'id': {'read_only': True},
-            'value': {'read_only': True},
-            'post': {'read_only': True},
-            'created': {'read_only': True},
-        }
+        fields = ['value', 'authorDetail', 'PublicId', 'postPublicId', 'created']
+        read_only_fields = ['value', 'created']
 
     def create(self, validate_data):
-        post_id = validate_data.get('postId')
-        request = self.context.get('request')
+        postPublicId = validate_data.get('postPublicId')
+        request: Any = self.context.get('request')
+        if not postPublicId or postPublicId is None:
+            raise serializers.ValidationError(res["MISSING_PARAMETER"])
         try:
-            post_obj = Post.objects.get(id=int(post_id))
+            post_obj = Post.objects.get(public_id=postPublicId) or None
+            if post_obj is None:
+                raise serializers.ValidationError(res["POST_NOT_FOUND"])
         except:
-            raise serializers.ValidationError(
-                _("Error 404 response")
-            )
+            raise serializers.ValidationError(res["SOMETHING_WENT_WRONG"])
         if request.user in post_obj.liked.all():
             post_obj.liked.remove(request.user)
         else:
             post_obj.liked.add(request.user)
         like, created = LikePost.objects.get_or_create(user=request.user, post=post_obj)
         if not created:
-            if like.value=='Like':
-                like.value='Unlike'
+            if like.value == 'Like':
+                like.value = 'Unlike'
             else:
                 like.value='Like'
         else:
@@ -51,29 +55,34 @@ class LikePostSerializer(serializers.ModelSerializer):
         return like
 
 
-class CommentPostSerializer(serializers.ModelSerializer):
-
-    author_detail = UserSerializer(read_only=True, source='author')
-
-    class Meta:
-        model = Comment
-        fields = ['id', 'author', 'author_detail', 'post', 'message', 'created']
-        extra_kwargs = {
-            'id': {'read_only': True},
-            'author': {'write_only': True},
-            'created': {'read_only': True},
-        }
-
-
 class PostSerializer(serializers.ModelSerializer):
 
-    author_detail = UserSerializer(read_only=True, source='author')
+    authorDetail = UserSerializer(read_only=True, source='author')
+    publicId = serializers.CharField(read_only=True, source='public_id')
+    body = serializers.CharField(required=False)
+    image = serializers.ImageField(required=False)
     liked = UserSerializer(read_only=True, many=True)
-    comments = CommentPostSerializer(read_only=True, many=True)
+    # comments = CommentPostSerializer(read_only=True, many=True)
+    numberComments = serializers.SerializerMethodField()
+
+    def get_numberComments(self, obj):
+        return Comment.objects.filter(post=obj).count()
 
     class Meta:
         model = Post
-        exclude = ['is_updated']
-        extra_kwargs = {
-            'author': {'write_only': True},
-        }
+        fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'numberComments']
+        # fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'comments', 'numberComments']
+        read_only_fields = ['author', 'is_updated', 'created', 'updated', 'liked', 'comments']
+
+    def create(self, validate_data):
+        request: Any = self.context.get('request', None)
+        body = validate_data.get('body', None)
+        image = validate_data.get('image', None)
+        if body or image:
+            try:
+                new_post = Post.objects.create(author=request.user, body=body, image=image)
+                return new_post
+            except:
+                raise serializers.ValidationError(res["SOMETHING_WENT_WRONG"])
+        else:
+            raise serializers.ValidationError(res["BODY_OR_IMAGE_FIELD_MUST_NOT_EMPTY"])
