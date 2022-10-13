@@ -8,9 +8,9 @@ class ProfileAdmin(admin.ModelAdmin):
 
     list_display = ('full_name', 'pseudo', 'bio', 'birth_date',)
     fieldsets = (
-        (None, {'fields': ('user', 'uid',)}),
-        (_('Personal info'), {'fields': ('pseudo', 'bio', 'birth_date', 'picture', 'cover_picture',)}),
-        (_('Following'), {'fields': ('following',)}),
+        (None, {'fields': ('user',)}),
+        (_('Personal info'), {'fields': ('pseudo', 'bio', 'birth_date', 'profile_picture', 'cover_picture',)}),
+        # (_('Following'), {'fields': ('following',)}),
     )
     search_fields = ('full_name', 'pseudo',)
 

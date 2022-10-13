@@ -6,24 +6,27 @@ from django.views.static import serve
 
 from docs.swagger import schema_view
 
-from config.settings.base import ENV
+from apps.home.views import home
+# from apps.post.urls import router
 
 
 urlpatterns = [
-    path('', include('apps.home.urls')),
+    path('', home, name='home'),
+    path('admin/docs', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
-    path('api/account/', include('apps.account.urls')),
-    path('api/me/', include('apps.profiles.urls')),
-    path('api/posts/', include('apps.post.routers.post')),
-    path('api/like-post/', include('apps.post.routers.like_post')),
-    path('api/comments/', include('apps.post.routers.comment')),
+    path('api/auth/user/', include('apps.authentication.urls')),
+    path('api/users/', include('apps.profiles.urls')),
+    path('api/posts/', include('apps.post.urls')),
+    # path('api/', include(router.urls)),
+    # path('api/', include('apps.post.ee')),
+    path('api/comments/', include('apps.comment.urls')),
     
     re_path(r'^docs(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^docs/api/$', schema_view.with_ui('swagger', cache_timeout=0), name='docs-api'),
     # re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
-if ENV == 'development':
+if settings.ENV == 'development':
     if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     else:

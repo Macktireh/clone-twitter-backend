@@ -35,22 +35,22 @@ jobs:
         run: |
           python manage.py test -v 2
 
-      - name: Add remote origin Staging
-        if: github.ref == 'refs/heads/main' && job.status == 'success' #we specify that this action will ONLY run if everything up to now is successful- so if theres a fail in the tests, then this will not be deployed.
-        run: |
-          git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME_STAGING }}.git
+      # - name: Add remote origin Staging
+      #   if: github.ref == 'refs/heads/main' && job.status == 'success' #we specify that this action will ONLY run if everything up to now is successful- so if theres a fail in the tests, then this will not be deployed.
+      #   run: |
+      #     git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME_STAGING }}.git
 
-      - name: Deploy to Heroku Staging
-        if: github.ref == 'refs/heads/main' && job.status == 'success'
-        run: |
-          git push
+      # - name: Deploy to Heroku Staging
+      #   if: github.ref == 'refs/heads/main' && job.status == 'success'
+      #   run: |
+      #     git push
 
-      - name: Add remote origin Production
-        if: github.ref == 'refs/heads/production' && job.status == 'success' #we specify that this action will ONLY run if everything up to now is successful- so if theres a fail in the tests, then this will not be deployed.
-        run: |
-          git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME_PRODUCTION }}.git
+      # - name: Add remote origin Production
+      #   if: github.ref == 'refs/heads/production' && job.status == 'success' #we specify that this action will ONLY run if everything up to now is successful- so if theres a fail in the tests, then this will not be deployed.
+      #   run: |
+      #     git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME_PRODUCTION }}.git
 
-      - name: Deploy to Heroku Production
-        if: github.ref == 'refs/heads/production' && job.status == 'success'
-        run: |
-          git push
+      # - name: Deploy to Heroku Production
+      #   if: github.ref == 'refs/heads/production' && job.status == 'success'
+      #   run: |
+      #     git push

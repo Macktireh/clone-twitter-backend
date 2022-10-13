@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %} Home {% endblock title %}
+
+
+{% block style %}
+<link rel="shortcut icon" href="{% static 'svg/twitter.svg' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'home/css/reset.css' %}" />
+<link rel="stylesheet" href="{% static 'components/css/navbar.css' %}" />
+<link rel="stylesheet" href="{% static 'home/css/home.css' %}" />
+<link rel="stylesheet" href="{% static 'components/css/footer.css' %}" />
+{% endblock style %}
+
+
+{% block header %}
+<header>
+  {% include 'components/navbar.html' %}
+</header>
+{% endblock header %}
+
+
+{% block content %}
+<main>
+  <div class="box-content">
+    <h1>API Backend Clone Twitter</h1>
+    <div class="btn">
+      <a href="https://mack-twitter.pages.dev/">App Frontend</a>
+      <a href="{% url 'docs-api' %}">API Documentation</a>
+    </div>
+  </div>
+  <img src="https://mack-twitter.pages.dev/static/svg/twitter.svg" />
+</main>
+{% endblock content %}
+
+
+{% block footer %}
+<footer>
+  {% include 'components/footer.html' %}
+</footer>
+{% endblock footer %}
+
+
+{% block js %} {% endblock js %}
