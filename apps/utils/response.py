@@ -30,6 +30,7 @@ def response_messages(lang: str = None):
             "POST_NOT_FOUND": "Post non trouvé !",
             "MESSAGE_OR_IMAGE_FIELD_MUST_NOT_EMPTY.": "Le champ message ou image ne doit pas être vide.",
             "BODY_OR_IMAGE_FIELD_MUST_NOT_EMPTY": "Le champ body ou image ne doit pas être vide.",
+            "FILE_SIZE_TOO_LARGE": "La taille du fichier est trop grande. J'ai obtenu 13558755. Le maximum est 10485760",
 
             "SUCCESSFUL_REGISTRATION": "Inscription réussie !",
             "SUCCESSFUL_ACTIVATION_ACCOUNT": "Votre compte a été créé et activé avec succès !",
@@ -56,6 +57,7 @@ def response_messages(lang: str = None):
         "POST_NOT_FOUND": "Post not found!",
         "MESSAGE_OR_IMAGE_FIELD_MUST_NOT_EMPTY.": "The message or image field must not be empty.",
         "BODY_OR_IMAGE_FIELD_MUST_NOT_EMPTY": "The body or image field must not be empty.",
+        "FILE_SIZE_TOO_LARGE": "File size too large. Got 13558755. Maximum is 10485760",
         
         "SUCCESSFUL_REGISTRATION": "Successful registration!",
         "SUCCESSFUL_ACTIVATION_ACCOUNT": "Your account has been successfully created and activated!",

@@ -32,7 +32,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        exclude = ['id', 'birth_date', 'profile_picture', 'cover_picture']
+        exclude = ['id', 'birth_date', 'profile_picture', 'cover_picture', 'isUploadProfilePic', 'isUploadCoverPic']
         read_only_fields = ['created', 'updated']
 
     def update(self, instance, validated_data):

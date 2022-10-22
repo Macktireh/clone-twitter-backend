@@ -14,11 +14,11 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     public_id = models.CharField(max_length=64, unique=True, blank=True)
     body = models.TextField(blank=True, null=True)
-    image = models.ImageField(_("image"), upload_to=rename_img_post, blank=True, null=True)
-    created = models.DateTimeField(_("created date"), auto_now_add=True)
-    updated = models.DateTimeField(_("updated date"), auto_now=True)
+    image = models.ImageField(upload_to="cloneTwitter/media/post", blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     liked = models.ManyToManyField(User, blank=True, default=None)
-    is_updated = models.BooleanField(_("is updated"), default=False)
+    is_updated = models.BooleanField(default=False)
     
     objects = PostManager()
 
@@ -53,7 +53,7 @@ class LikePost(models.Model):
         ('Unlike', 'Unlike'),
     )
     value = models.CharField(choices=LIKE_CHOICES, max_length=10)
-    created = models.DateTimeField(_("created date"), auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:

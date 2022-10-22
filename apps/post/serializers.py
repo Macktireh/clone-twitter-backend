@@ -1,4 +1,4 @@
-from typing import Any
+import cloudinary
 
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
@@ -29,7 +29,7 @@ class LikePostSerializer(serializers.ModelSerializer):
 
     def create(self, validate_data):
         postPublicId = validate_data.get('postPublicId')
-        request: Any = self.context.get('request')
+        request = self.context.get('request')
         if not postPublicId or postPublicId is None:
             raise serializers.ValidationError(res["MISSING_PARAMETER"])
         try:
@@ -75,13 +75,15 @@ class PostSerializer(serializers.ModelSerializer):
         read_only_fields = ['author', 'is_updated', 'created', 'updated', 'liked', 'comments']
 
     def create(self, validate_data):
-        request: Any = self.context.get('request', None)
+        request = self.context.get('request', None)
         body = validate_data.get('body', None)
         image = validate_data.get('image', None)
         if body or image:
             try:
                 new_post = Post.objects.create(author=request.user, body=body, image=image)
                 return new_post
+            except cloudinary.exceptions.Error:
+                raise serializers.ValidationError(res["FILE_SIZE_TOO_LARGE"])
             except:
                 raise serializers.ValidationError(res["SOMETHING_WENT_WRONG"])
         else:

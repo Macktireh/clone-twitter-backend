@@ -1,5 +1,8 @@
+import cloudinary
+
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
+from django.conf import settings
 
 from rest_framework.response import Response
 from rest_framework import status, viewsets
@@ -12,6 +15,7 @@ from apps.utils.response import response_messages
 
 User = get_user_model()
 res = response_messages('fr')
+cloudinary.config(**settings.CLOUDINARY_STORAGE)
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
@@ -42,6 +46,16 @@ class UserProfileViewSet(viewsets.ModelViewSet):
             if kwargs.get('public_id') == request.user.public_id:
                 partial = kwargs.pop('partial', False)
                 instance = Profile.objects.get(user=request.user)
+                if request.data.get('profilePicture') is not None:
+                    if len(str(instance.profile_picture)) != 0 and instance.profile_picture:
+                        if instance.isUploadProfilePic:
+                            cloudinary.uploader.destroy(str(instance.profile_picture))
+                        else: instance.isUploadProfilePic = True; instance.save()
+                if request.data.get('coverPicture') is not None:
+                    if len(str(instance.cover_picture)) != 0 and instance.cover_picture:
+                        if instance.isUploadCoverPic:
+                            cloudinary.uploader.destroy(str(instance.cover_picture))
+                        else: instance.isUploadCoverPic = True; instance.save()
                 serializer = ProfileSerializer(instance, data=request.data, partial=partial)
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()

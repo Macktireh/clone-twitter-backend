@@ -169,11 +169,5 @@ class LogoutView(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = serializers.LogoutSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            return Response(
-                {'message': res["LOGOUT_SUCCESSFULLY"]},
-                status=status.HTTP_200_OK
-            )
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            return Response({'message': res["LOGOUT_SUCCESSFULLY"]}, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
