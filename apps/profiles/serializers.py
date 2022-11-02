@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from apps.follow.models import Follow
 
 from apps.profiles.models import Profile
 from apps.utils.response import response_messages
@@ -15,10 +16,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     # firstName = serializers.CharField(source='first_name')
     # lastName = serializers.CharField(source='last_name')
+    pseudo = serializers.CharField(source='profile.pseudo', read_only=True)
+    profilePicture = serializers.ImageField(source='profile.profile_picture', read_only=True)
+    bio = serializers.CharField(source='profile.bio', read_only=True)
 
     class Meta:
         model = User
-        fields = ['public_id', 'first_name', 'last_name']
+        fields = ['public_id', 'first_name', 'last_name', 'pseudo', 'profilePicture', 'bio']
         read_only_fields = ['public_id']
 
 
@@ -29,6 +33,16 @@ class ProfileSerializer(serializers.ModelSerializer):
     birthDate = serializers.DateField(source='birth_date', required=False)
     profilePicture = serializers.ImageField(source='profile_picture', required=False)
     coverPicture = serializers.ImageField(source='cover_picture', required=False)
+    followers = serializers.SerializerMethodField()
+    following = serializers.SerializerMethodField()
+
+    def get_followers(self, obj: Profile):
+        followers = Follow.objects.get_all_followers(obj.user)
+        return [f.followers.public_id for f in followers]
+
+    def get_following(self, obj: Profile) -> int:
+        following = Follow.objects.get_all_following(obj.user)
+        return [f.following.public_id for f in following]
 
     class Meta:
         model = Profile
