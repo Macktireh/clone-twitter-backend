@@ -36,12 +36,12 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'drf_yasg',
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django_extensions',
+    'drf_yasg',
     'cloudinary',
     'cloudinary_storage',
 ]

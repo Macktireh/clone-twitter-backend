@@ -1,42 +1,40 @@
-# from django.db import models
-# from django.db.models import Q
+from django.db import models
+from django.db.models import Q
+from django.contrib.auth import get_user_model
+
+from apps.utils.functions import list_to_queryset
 
 
-# class ProfileManager(models.Manager):
-#     def get_all_profiles(self, me):
-#         """        
-#         me : utilisateur connecté
+User = get_user_model()
 
-#         Returns:
-#             cette méthode renvoie tout les profiles sauf moi (moi c'est-à-dire utilisateur connecté)
-#         """
-#         from apps.profiles.models import Profile
-        
-#         profiles = Profile.objects.select_related('user').filter(user__is_verified_email=True)
-#         # profiles = Profile.objects.select_related('user').filter(user__is_verified_email=True).exclude(user=me)
-#         return profiles
+
+class FollowManager(models.Manager):
     
-#     # def get_all_profiles_to_invites(self, sender):
-#     #     """
-#     #     Args:
-#     #         sender : utilisateur qui envoie l'invitation
-
-#     #     Returns:
-#     #         cette méthode renvoie tout les profiles pas de relation avec moi (moi c'est-à-dire utilisateur connecté)
-#     #     """
-#     #     from apps.friends.models import Relationship
-#     #     from apps.profiles.models import Profile
+    def get_all_following(self, user):
+        from apps.follow.models import Follow
+        return Follow.objects.select_related('following').filter(followers=user)
+    
+    def get_all_followers(self, user):
+        from apps.follow.models import Follow
+        return Follow.objects.select_related('followers').filter(following=user)
+    
+    def is_following(self, me, user):
+        from apps.follow.models import Follow
+        return Follow.objects.filter(Q(followers=me) & Q(following=user)), Follow.objects.filter(Q(followers=me) & Q(following=user)).exists()
+    
+    def connect_people(self, user):
+        from apps.follow.models import Follow
         
-#     #     profiles = Profile.objects.select_related('user').prefetch_related('sender').filter(user__is_email_verified=True).exclude(user=sender)
-#     #     profile = Profile.objects.get(user=sender)
-#     #     qs = Relationship.objects.filter(Q(sender=profile) | Q(receiver=profile))
+        followers = Follow.objects.get_all_followers(user)
+        following = Follow.objects.get_all_following(user)
         
-#     #     accepted = set([])
-#     #     for q in qs:
-#     #         if q.status == 'accepted':
-#     #             accepted.add(q.receiver)
-#     #             accepted.add(q.sender)
+        list_publicId_follow = [f.followers.public_id for f in followers] + [f.following.public_id for f in following]
         
-#     #     available = [profile for profile in profiles if profile not in accepted]
+        users = User.objects.all()
+        people = []
         
-#     #     return available
+        for u in users:
+            if u.public_id not in list(set(list_publicId_follow)) and u != user: people.append(u)
+        
+        qs = list_to_queryset(model=User, data=people)
+        return qs
