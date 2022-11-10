@@ -1,0 +1,81 @@
+{% load static %}
+<nav>
+  <div class="logo">
+    <a href="">
+      <span>Clone Twitter</span>
+    </a>
+  </div>
+  <div class="nav-items">
+    <a href="{% url 'home' %}" class="{% if activePage == 'home' %}active{%endif%}">
+      <div class="nav-item-link">Home</div>
+      <span class="nav-item-active"></span>
+    </a>
+    <a href="{% url 'docs-api' %}">
+      <div class="nav-item-link">API</div>
+      <span class="nav-item-active"></span>
+    </a>
+    <a href="https://mack-twitter.pages.dev/">
+      <div class="nav-item-link">Frontend</div>
+      <span class="nav-item-active"></span>
+    </a>
+    <a href="https://github.com/Macktireh/clone-twitter-backend" target="_blank">
+      <div class="nav-item-link">Code Backend</div>
+      <span class="nav-item-active"></span>
+    </a>
+    <a href="https://github.com/Macktireh/clone-twitter-frontend" target="_blank">
+      <div class="nav-item-link">Code Frontend</div>
+      <span class="nav-item-active"></span>
+    </a>
+    {% if user.is_superuser %}
+    <a href="{% url 'admin:index' %}" target="_blank">
+      <div class="nav-item-link">Admin</div>
+      <span class="nav-item-active"></span>
+    </a>
+    {% endif %}
+  </div>
+  <div class="nav-auth">
+    {% if user.is_authenticated %}
+    <a href="">Deconnexion</a>
+    {% else %}
+    <a href="">Connexion</a>
+    {% endif %}
+  </div>
+</nav>
+{% comment %}
+<div class="hidden mobile-menu">
+  <ul class="">
+    <li class="active"><a href="{% url 'home' %}"
+        class="block text-sm px-2 py-4 text-white bg-blue-500 font-semibold">Home</a></li>
+    <li><a href="{% url 'docs-api' %}" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">API</a>
+    </li>
+    <li><a href="https://mack-twitter.pages.dev/"
+        class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Frontend</a></li>
+    <li><a href="https://github.com/Macktireh/clone-twitter-backend" target="_blank"
+        class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Code
+        Backend</a>
+    </li>
+    <li><a href="https://github.com/Macktireh/clone-twitter-frontend" target="_blank"
+        class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Code
+        Frontend</a>
+    </li>
+    <li><a href="#" class="block text-sm px-2 py-4 hover:bg-blue-500 transition duration-300">Login</a>
+    </li>
+  </ul>
+</div>
+
+<button>
+  <svg class=" w-6 h-6 text-gray-500 hover:text-blue-500 " x-show="!showMenu" fill="none" stroke-linecap="round"
+    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+    <path d="M4 6h16M4 12h16M4 18h16"></path>
+  </svg>
+</button>
+
+<script>
+  const btn = document.querySelector("button.mobile-menu-button");
+  const menu = document.querySelector(".mobile-menu");
+
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+</script>
+{% endcomment %}
