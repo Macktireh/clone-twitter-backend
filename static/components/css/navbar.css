@@ -1,0 +1,82 @@
+:root {
+  --color1: #f1f1f1;
+  --color2: #15202b;
+  --color3: #1d9bf0;
+  --color3-1: #1d9cf095;
+  --color4: #cccccc;
+}
+
+header {
+  width: 100%;
+  height: 65px;
+  padding-top: 10px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.218);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+nav {
+  width: inherit;
+  height: inherit;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.nav-items,
+.nav-auth {
+  height: 85%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-items {
+  height: 85%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-items a {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all .2s ease-in-out;
+}
+
+.nav-items a:hover {
+  color: var(--color3);
+}
+
+.nav-items a.active {
+  color: var(--color3);
+}
+
+.nav-items a.active .nav-item-active {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color3);
+  color: var(--color3);
+  border-radius: 8px;
+}
+
+.nav-auth a {
+  padding: 8px 16px;
+  background-color: var(--color3);
+  border: 1px solid var(--color3);
+  border-radius: 8px;
+  font-weight: 600;
+}

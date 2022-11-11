@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,12 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %} {% endblock title %}| Clone Twitter</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://unpkg.com/alpinejs@3.2.4/dist/cdn.min.js"></script>
-  <!-- {% block style %} {% endblock style %} -->
+  {% block style %} {% endblock style %}
 </head>
 
-<body class="bg-black text-white font-f1">
+<body>
   <!-- Header -->
   {% block header %} {% endblock header %}
 
@@ -26,7 +23,6 @@
 
 
   <!-- Javascript -->
-  <script type="text/javascript" src=" {% static 'home/js/tailwind.config.js' %} "></script>
   {% block js %} {% endblock js %}
 </body>
 
