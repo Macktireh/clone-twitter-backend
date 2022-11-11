@@ -1,7 +1,5 @@
 import os
 
-import cloudinary_storage
-
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
@@ -115,13 +113,13 @@ if TYPE_DATABASE == 'sqlite3':
     }
 else:
     DATABASES = {
-        f'{TYPE_DATABASE}': {
-            'ENGINE': os.environ.get("ENGINE"),
-            'NAME': os.environ.get("DB"),
-            'USER': os.environ.get("USERNAME"),
-            'PASSWORD': os.environ.get("PASSWORD"),
-            'HOST': os.environ.get("HOST"),
-            'PORT': os.environ.get("PORT"),
+        'default': {
+            'ENGINE': os.environ.get("DB_ENGINE"),
+            'NAME': os.environ.get("DB_NAME"),
+            'USER': os.environ.get("DB_USER"),
+            'PASSWORD': os.environ.get("DB_PASSWORD"),
+            'HOST': os.environ.get("DB_HOST"),
+            'PORT': os.environ.get("DB_PORT"),
         },
     }
 
@@ -185,9 +183,9 @@ STATICFILES_DIRS = [
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles/')
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUD_NAME'),
-    'API_KEY': os.environ.get('API_KEY'),
-    'API_SECRET': os.environ.get('API_SECRET')
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET')
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
