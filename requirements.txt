@@ -10,3 +10,4 @@ Pillow
 psycopg2
 python-dotenv
 six
+whitenoise

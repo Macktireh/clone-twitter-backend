@@ -1,2 +1,2 @@
-release: python manage.py migrate && python manage.py collectstatic
+release: python manage.py migrate
 web: gunicorn config.wsgi --log-file -
