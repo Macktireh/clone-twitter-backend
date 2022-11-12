@@ -75,7 +75,7 @@ class CommentPostViewSet(viewsets.ModelViewSet):
                 if len(str(instance.image)) != 0 and instance.image:
                     cloudinary.uploader.destroy(str(instance.image))
                 self.perform_destroy(instance)
-                return Response(status=status.HTTP_204_NO_CONTENT)
+                return Response(status=status.HTTP_200_OK)
             return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -93,7 +93,7 @@ class DeleteComment(APIView):
                 if len(str(instance.image)) != 0 and instance.image:
                     cloudinary.uploader.destroy(str(instance.image))
                 instance.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
+                return Response(status=status.HTTP_200_OK)
             return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
