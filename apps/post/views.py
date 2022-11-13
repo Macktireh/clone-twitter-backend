@@ -2,16 +2,18 @@ import cloudinary
 
 from django.utils.translation import gettext as _
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
-from apps.post.models import Post, LikePost, User
+from apps.post.models import Post, LikePost
 from apps.post.serializers import PostSerializer, LikePostSerializer
 from apps.utils.response import response_messages
 
 
+User = get_user_model()
 res = response_messages('fr')
 
 cloudinary.config(**settings.CLOUDINARY_STORAGE)

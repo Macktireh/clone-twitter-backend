@@ -41,7 +41,7 @@ class FollowingSerializer(serializers.ModelSerializer):
         if not followingPubblicId or followingPubblicId is None:
             raise serializers.ValidationError(res["MISSING_PARAMETER"])
         try:
-            userfollowing = User.objects.get(public_id=followingPubblicId) or None
+            userfollowing = User.objects.get(public_id=followingPubblicId)
         except:
             raise serializers.ValidationError(res["SOMETHING_WENT_WRONG"])
         if userfollowing is None:

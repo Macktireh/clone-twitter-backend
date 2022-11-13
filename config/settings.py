@@ -55,6 +55,7 @@ LOCAL_APPS = [
     'apps.post',
     'apps.comment',
     'apps.follow',
+    'apps.notification',
 ]
 
 if os.environ.get('DEVELOP_APPS', False) == 'True':

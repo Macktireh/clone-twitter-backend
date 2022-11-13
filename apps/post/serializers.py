@@ -4,9 +4,9 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
-from apps.comment.models import Comment
 
 from apps.post.models import LikePost, Post
+from apps.comment.models import Comment
 from apps.profiles.serializers import UserSerializer
 from apps.comment.serializers import CommentPostSerializer
 from apps.utils.response import response_messages
@@ -84,7 +84,7 @@ class PostSerializer(serializers.ModelSerializer):
                 return new_post
             except cloudinary.exceptions.Error:
                 raise serializers.ValidationError(res["FILE_SIZE_TOO_LARGE"])
-            except:
-                raise serializers.ValidationError(res["SOMETHING_WENT_WRONG"])
+            # except:
+            #     raise serializers.ValidationError(res["SOMETHING_WENT_WRONG"])
         else:
             raise serializers.ValidationError(res["BODY_OR_IMAGE_FIELD_MUST_NOT_EMPTY"])
