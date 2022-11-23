@@ -1,19 +1,19 @@
-import os
 import cloudinary
 
 from django.utils.translation import gettext as _
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from rest_framework import viewsets, status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
-from apps.post.models import Post, LikePost, User
+from apps.post.models import Post, LikePost
 from apps.post.serializers import PostSerializer, LikePostSerializer
 from apps.utils.response import response_messages
 
 
+User = get_user_model()
 res = response_messages('fr')
 
 cloudinary.config(**settings.CLOUDINARY_STORAGE)
@@ -59,24 +59,6 @@ class PostViewSet(viewsets.ModelViewSet):
                 if len(str(instance.image)) != 0 and instance.image:
                     cloudinary.uploader.destroy(str(instance.image))
                 self.perform_destroy(instance)
-                return Response(status=status.HTTP_200_OK)
-            return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class DeletePost(APIView):
-
-    def post(self, request, *args, **kwargs):
-        try:
-            public_id = kwargs.get('public_id', None)
-            if public_id:
-                instance = Post.objects.get(public_id=public_id)
-                if not instance.author == request.user:
-                    return Response({'errors': res["YOU_ARE_NOT_AUTHORIZED_FOR_THIS_ACTION"]}, status=status.HTTP_403_FORBIDDEN)
-                if len(str(instance.image)) != 0 and instance.image:
-                    cloudinary.uploader.destroy(str(instance.image))
-                instance.delete()
                 return Response(status=status.HTTP_200_OK)
             return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_400_BAD_REQUEST)
         except:

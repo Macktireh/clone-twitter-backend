@@ -4,7 +4,6 @@ from django.utils.translation import gettext as _
 from django.conf import settings
 
 from rest_framework import viewsets, status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
@@ -80,23 +79,6 @@ class CommentPostViewSet(viewsets.ModelViewSet):
         except:
             return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-class DeleteComment(APIView):
-
-    def post(self, request, *args, **kwargs):
-        try:
-            public_id = kwargs.get('public_id', None)
-            if public_id:
-                instance = Comment.objects.get(public_id=public_id)
-                if not instance.author == request.user:
-                    return Response({'errors': res["YOU_ARE_NOT_AUTHORIZED_FOR_THIS_ACTION"]}, status=status.HTTP_403_FORBIDDEN)
-                if len(str(instance.image)) != 0 and instance.image:
-                    cloudinary.uploader.destroy(str(instance.image))
-                instance.delete()
-                return Response(status=status.HTTP_200_OK)
-            return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LikeCommentViewSet(viewsets.ModelViewSet):
 

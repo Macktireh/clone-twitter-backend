@@ -6,7 +6,6 @@ from apps.utils import getList, postCreate, getRetrieve, putUpdate, patchUpdate,
 
 urlpatterns = [
     path('likes/', views.LikeCommentViewSet.as_view({**getList, **postCreate}), name='GetCreateDeleteLikeComment'),
-    path('delete/<str:postPublicId>/<str:public_id>/', views.DeleteComment.as_view(), name='DeleteComment'),
     path('<str:postPublicId>/', views.CommentPostViewSet.as_view({**getList, **postCreate}), name='ListCreateComment'),
     path('<str:postPublicId>/<str:public_id>/', views.CommentPostViewSet.as_view({**getRetrieve, **patchUpdate, **deleteDestroy}), name='RetrieveUpdateDeleteComment'),
 ]
