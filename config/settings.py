@@ -20,6 +20,7 @@ DEBUG = ENV != 'production'
 
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', "127.0.0.1 localhost").split(" ")
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', "127.0.0.1 localhost http://127.0.0.1 http://localhost").split(" ")
 
 
 # Application definition
