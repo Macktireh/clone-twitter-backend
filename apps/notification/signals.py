@@ -64,13 +64,14 @@ def signals_notification_add_comment(sender, instance, created, **kwargs) -> Non
 @receiver(post_save, sender=LikeComment)
 def signals_notification_add_like_comment(sender, instance, created, **kwargs) -> None:
     from_user = instance.user
-    to_user = instance.post.author
+    to_user = instance.comment.author
     if instance.value == 'Like':
         if from_user != to_user:
             Notification.objects.create(
                 type_notif='Like_Comment',
                 from_user=from_user,
                 to_user=to_user,
+                post=instance.comment.post,
                 comment_post=instance.comment,
                 like_comment = instance
             )

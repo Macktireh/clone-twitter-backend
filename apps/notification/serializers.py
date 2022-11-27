@@ -14,10 +14,14 @@ res = response_messages('fr')
 
 class NotificationSerializer(serializers.ModelSerializer):
 
-    fromId = serializers.CharField(source='from_user.publi_id', read_only=True)
-    toId = serializers.CharField(source='to_user.publi_id', read_only=True)
+    publicId = serializers.CharField(source='public_id', read_only=True)
+    fromId = serializers.CharField(source='from_user.public_id', read_only=True)
+    toId = serializers.CharField(source='to_user.public_id', read_only=True)
+    postPublicId = serializers.CharField(source='post.public_id', read_only=True)
+    post = serializers.CharField(source='post.body', read_only=True)
+    comment = serializers.CharField(source='comment_post.message', read_only=True)
 
     class Meta:
         model = Notification
-        fields = ['public_id', 'fromId', 'toId', 'seen', 'read', 'created', 'updated']
-        read_only_fields = ['public_id', 'seen', 'read', 'created', 'updated']
+        fields = ['publicId', 'fromId', 'toId', 'type_notif', 'postPublicId', 'post', 'comment', 'seen', 'read', 'created', 'updated']
+        read_only_fields = ['type_notif', 'seen', 'read', 'created', 'updated']

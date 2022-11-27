@@ -43,6 +43,7 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     'cloudinary',
     'cloudinary_storage',
+    'channels',
 ]
 
 DEVELOP_APPS = [
@@ -102,6 +103,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION  = 'config.asgi.application'
 
 
 TYPE_DATABASE = os.environ.get('TYPE_DATABASE', 'sqlite3')
@@ -125,6 +127,16 @@ else:
             'PORT': os.environ.get("DB_PORT"),
         },
     }
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Config rest_framework

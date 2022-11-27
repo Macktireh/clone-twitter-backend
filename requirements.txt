@@ -1,3 +1,5 @@
+channels==3.0.4
+channels_redis==4.0.0
 Django==4.1.2
 django-cloudinary-storage==0.3.0    
 django-cors-headers==3.13.0

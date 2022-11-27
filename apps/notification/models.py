@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
+from apps.notification.managers import NotificationManager
 from apps.post.models import LikePost, Post
 from apps.comment.models import Comment, LikeComment
 from apps.utils.functions import uid_generator
@@ -16,7 +17,7 @@ class TypeNotifChoices(models.TextChoices):
     like_post = 'Like_Post', _('Like Post')
     comment = 'Add_Comment', _('Add Comment')
     like_comment = 'Like_Comment', _('Like Comment')
-    following = 'following', _('following')
+    following = 'Follow_Or_Unfollow', _('Follow Unfollow')
 
 
 class Notification(models.Model):
@@ -33,6 +34,8 @@ class Notification(models.Model):
     read = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
+
+    objects = NotificationManager()
     
     class Meta:
         ordering = ['-updated']
