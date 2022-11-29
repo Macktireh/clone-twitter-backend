@@ -13,7 +13,6 @@ class NotificationConsumer(WebsocketConsumer):
         self.notif_group = "notif_group"
 
     def connect(self):
-        
         self.accept()
 
         async_to_sync(self.channel_layer.group_add)(
@@ -31,7 +30,6 @@ class NotificationConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
-        # send chat message event to the room
         async_to_sync(self.channel_layer.group_send)(
             self.notif_group,
             {
