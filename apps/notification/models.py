@@ -11,13 +11,22 @@ from apps.utils.functions import uid_generator
 User = get_user_model()
 
 
+class TypeNotif:
+    
+    post = 'Add_Post'
+    like_post = 'Like_Post'
+    comment = 'Add_Comment'
+    like_comment = 'Like_Comment'
+    following = 'following'
+
+
 class TypeNotifChoices(models.TextChoices):
     
-    post = 'Add_Post', _('Add Post')
-    like_post = 'Like_Post', _('Like Post')
-    comment = 'Add_Comment', _('Add Comment')
-    like_comment = 'Like_Comment', _('Like Comment')
-    following = 'Follow_Or_Unfollow', _('Follow Unfollow')
+    post = TypeNotif.post, _('Add Post')
+    like_post = TypeNotif.like_post, _('Like Post')
+    comment = TypeNotif.comment, _('Add Comment')
+    like_comment = TypeNotif.like_comment, _('Like Comment')
+    following = TypeNotif.following, _('Following')
 
 
 class Notification(models.Model):
