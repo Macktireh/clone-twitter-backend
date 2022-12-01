@@ -7,6 +7,7 @@ from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 load = load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Variable environment local or production
@@ -43,6 +44,7 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     'cloudinary',
     'cloudinary_storage',
+    'channels',
 ]
 
 DEVELOP_APPS = [
@@ -59,7 +61,7 @@ LOCAL_APPS = [
     'apps.notification',
 ]
 
-if os.environ.get('DEVELOP_APPS', False) == 'True':
+if ENV != 'production':
     INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + DEVELOP_APPS
 else:
     INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -77,12 +79,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-MIDDLEWARE = MIDDLEWARE + ['livereload.middleware.LiveReloadScript'] if os.environ.get('DEVELOP_APPS', False) == 'True' else MIDDLEWARE
+MIDDLEWARE = MIDDLEWARE + ['livereload.middleware.LiveReloadScript'] if ENV != 'production' else MIDDLEWARE
+
 
 ROOT_URLCONF = 'config.urls'
 
+
 TEMPLATES_DIRS = [
-    os.path.join(BASE_DIR, 'templates')
+    os.path.join(BASE_DIR, 'templates'),
 ]
 
 TEMPLATES = [
@@ -101,12 +105,14 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = 'config.asgi.application'
 
-
-TYPE_DATABASE = os.environ.get('TYPE_DATABASE', 'sqlite3')
 
 # Database
+TYPE_DATABASE = os.environ.get('TYPE_DATABASE', 'sqlite3')
+
 if TYPE_DATABASE == 'sqlite3':
     DATABASES = {
         'default': {
@@ -125,6 +131,21 @@ else:
             'PORT': os.environ.get("DB_PORT"),
         },
     }
+
+
+if ENV == 'production':
+    hosts_redis = [(f"redis://:{os.environ.get('REDIS_PASSWORD')}@{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}/0")]
+else:
+    hosts_redis = [('127.0.0.1', 6379)]
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": hosts_redis
+        },
+    },
+}
 
 
 # Config rest_framework
@@ -191,12 +212,14 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET')
 }
 
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'authentication.User'
+
 
 # Config Send Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -230,6 +253,6 @@ SIMPLE_JWT = {
 # the list of origins authorized to make HTTP requests
 CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', "http://localhost:3000 http://127.0.0.1:3000").split(" ")
 
+
 # Domain name frontend
 DOMAIN_FRONTEND = os.environ.get('DOMAIN_FRONTEND')
-

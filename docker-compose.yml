@@ -1,0 +1,10 @@
+version: '3'
+
+name: CloneTwitter
+
+services:
+  redis:
+    image: redis:5
+    container_name: redis
+    ports:
+      - 6379:6379
