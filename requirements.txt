@@ -1,10 +1,11 @@
 channels==3.0.4
 channels_redis==4.0.0
+daphne==3.0.2
 Django==4.1.2
 django-cloudinary-storage==0.3.0    
 django-cors-headers==3.13.0
 django-extensions==3.2.1
-django-livereload-server
+django-livereload-server==0.4
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 drf-yasg==1.21.4
