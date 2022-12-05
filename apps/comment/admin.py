@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from apps.comment.models import Comment, LikeComment
 
 
+@admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
 
     list_display = ('comment_author', 'post_author', 'public_id', 'message', 'created', 'updated', 'is_updated',)
@@ -17,6 +18,8 @@ class CommentAdmin(admin.ModelAdmin):
     def public_id(self, instance):
         return f"{instance.post.public_id}"
 
+
+@admin.register(LikeComment)
 class LikeCommentAdmin(admin.ModelAdmin):
 
     list_display = ('like_author', 'comment_author', 'public_id', 'value', 'created',)
@@ -29,7 +32,3 @@ class LikeCommentAdmin(admin.ModelAdmin):
 
     def public_id(self, instance):
         return f"{instance.comment.public_id}"
-
-
-admin.site.register(Comment, CommentAdmin)
-admin.site.register(LikeComment, LikeCommentAdmin)

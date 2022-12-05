@@ -47,10 +47,6 @@ THIRD_PARTY_APPS = [
     'channels',
 ]
 
-DEVELOP_APPS = [
-    'livereload',
-]
-
 LOCAL_APPS = [
     'apps.home',
     'apps.authentication',
@@ -59,6 +55,11 @@ LOCAL_APPS = [
     'apps.comment',
     'apps.follow',
     'apps.notification',
+    'apps.chat',
+]
+
+DEVELOP_APPS = [
+    'livereload',
 ]
 
 if ENV != 'production':

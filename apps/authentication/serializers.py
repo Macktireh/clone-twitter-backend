@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from django.utils import timezone
 
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from apps.authentication.tokens import TokenGenerator
 from apps.authentication.validators import email_validation, password_validation
@@ -246,26 +247,43 @@ class UserResetPasswordSerializer(serializers.Serializer):
 
 
 class LogoutSerializer(serializers.Serializer):
-
+    
     public_id = serializers.CharField(
         write_only=True,
         error_messages={
-            "blank": "Le champ Mot de passe ne doit pas être vide.",
+            "blank": "Le champ public_id ne doit pas être vide.",
             "required": "Le champ public_id est obligatoire.",
         },
     )
-
+    refresh = serializers.CharField(
+        write_only=True,
+        error_messages={
+            "blank": "Le champ refresh ne doit pas être vide.",
+            "required": "Le champ refresh est obligatoire.",
+        },
+    )
+    
     class Meta:
-        fields = ['public_id']
-
+        fields = ['public_id', 'refresh']
+        
     def validate(self, attrs):
+        public_id = attrs.get('public_id', None)
+        refresh = attrs.get('refresh', None)
+        if not public_id or not refresh:
+            raise serializers.ValidationError(
+                _("Les champs public_id et refresh sont obligatoire.")
+            )
+        self.public_id = public_id
+        self.refresh = refresh
+        return attrs
+    
+    def save(self, attrs):
         try:
-            public_id = attrs.get('public_id', None)
-            if public_id is None:
-                raise serializers.ValidationError(
-                    _("Le champ public_id est obligatoire.")
-                )
-            user = User.objects.get(public_id=public_id)
+            RefreshToken(self.refresh).blacklist()
+        except TokenError:
+            self.fail("bad refresh token")
+        try:
+            user = User.objects.get(public_id=self.public_id)
             user.last_logout = timezone.now()
             user.save()
             return attrs

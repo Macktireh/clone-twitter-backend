@@ -23,7 +23,7 @@ class SignupView(viewsets.ModelViewSet):
     serializer_class = serializers.SignupSerializer
     http_method_names = ['post']
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs) -> Response:
         serializer = serializers.SignupSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()

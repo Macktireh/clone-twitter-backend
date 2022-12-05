@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from apps.authentication.models import User
 
 
+@admin.register(User)
 class UserAdmin(BaseUserAdmin):
 
     model = User
@@ -27,6 +28,3 @@ class UserAdmin(BaseUserAdmin):
     )
     search_fields = ('email', 'first_name', 'last_name',)
     ordering = ('-date_joined',)
-
-
-admin.site.register(User, UserAdmin)

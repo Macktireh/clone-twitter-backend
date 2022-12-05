@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from apps.profiles.models import Profile
 
 
+@admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
 
     list_display = ('full_name', 'pseudo', 'bio', 'birth_date',)
@@ -16,6 +17,3 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def full_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}"
-
-
-admin.site.register(Profile, ProfileAdmin)
