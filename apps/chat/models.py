@@ -15,7 +15,6 @@ class Message(models.Model):
     reciever = models.ForeignKey(User, related_name='reciever', on_delete=models.CASCADE)
     message = models.TextField(blank=True)
     seen = models.BooleanField(default=False)
-    read = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     

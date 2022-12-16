@@ -15,3 +15,8 @@ class MessageManager(models.Manager):
         """
         from apps.chat.models import Message
         return Message.objects.filter(Q(reciever=current_user, sender=other_user) | Q(reciever=other_user, sender=current_user))
+    
+    def messages_received_not_seen(self, user):
+        
+        from apps.chat.models import Message
+        return Message.objects.filter(reciever=user, seen=False)
