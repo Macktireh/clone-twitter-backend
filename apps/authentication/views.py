@@ -8,13 +8,12 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 
 from apps.authentication import serializers
-from apps.authentication.tokens import get_tokens_for_user, TokenGenerator
+from apps.authentication.tokens import TokenGenerator, get_tokens_for_user
 from apps.utils.email import send_email
-from apps.utils.response import response_messages
+from apps.utils.response import res
 
 
 User = get_user_model()
-res = response_messages('fr')
 
 
 class SignupView(viewsets.ModelViewSet):

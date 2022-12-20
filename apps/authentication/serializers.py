@@ -12,11 +12,10 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from apps.authentication.tokens import TokenGenerator
 from apps.authentication.validators import email_validation, password_validation
 from apps.utils.email import send_email
-from apps.utils.response import error_messages, response_messages
+from apps.utils.response import error_messages, res
 
 
 User = get_user_model()
-res = response_messages('fr')
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -89,7 +88,7 @@ class ActivationSerializer(serializers.Serializer):
         token = attrs.get('token')
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(pk=uid)
+            user = User.objects.get(public_id=uid)
         except Exception as e:
             user = None
         if user and TokenGenerator().check_token(user, token):
@@ -229,7 +228,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"])
         try:
             uid = force_str(urlsafe_base64_decode(uid))
-            user = User.objects.get(pk=uid)
+            user = User.objects.get(public_id=uid)
         except Exception as e:
             user = None
         if user and PasswordResetTokenGenerator().check_token(user, token):

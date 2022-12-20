@@ -67,3 +67,8 @@ def response_messages(lang: str = None):
         "PASSWORD_RESET_LINK_SEND": "The password reset link has been sent. Please check your email.",
         "LOGOUT_SUCCESSFULLY": "Successful logout!",
     }
+
+
+LANG = "fr"
+
+res = response_messages(LANG)
