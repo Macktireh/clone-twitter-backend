@@ -5,10 +5,11 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from apps.authentication import serializers
-from apps.utils.response import response_messages
+from apps.utils.response import res
+
 
 User = get_user_model()
-res = response_messages('fr')
+
 
 class UserResetPasswordSerializerTests(TestCase):
 
@@ -24,7 +25,7 @@ class UserResetPasswordSerializerTests(TestCase):
             'confirm_password': 'Test@123',
         }
         self.user  = User.objects.create(**self.user_attributes)
-        self.uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        self.uid = urlsafe_base64_encode(force_bytes(self.user.public_id))
         self.token = PasswordResetTokenGenerator().make_token(self.user)
     
     def test_user_reset_password_valid(self):

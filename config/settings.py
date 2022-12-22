@@ -47,10 +47,6 @@ THIRD_PARTY_APPS = [
     'channels',
 ]
 
-DEVELOP_APPS = [
-    'livereload',
-]
-
 LOCAL_APPS = [
     'apps.home',
     'apps.authentication',
@@ -59,6 +55,11 @@ LOCAL_APPS = [
     'apps.comment',
     'apps.follow',
     'apps.notification',
+    'apps.chat',
+]
+
+DEVELOP_APPS = [
+    'livereload',
 ]
 
 if ENV != 'production':
@@ -251,8 +252,7 @@ SIMPLE_JWT = {
 
 
 # the list of origins authorized to make HTTP requests
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', "http://localhost:3000 http://127.0.0.1:3000").split(" ")
-
+CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', ["http://localhost:3000", "http://127.0.0.1:3000"])
 
 # Domain name frontend
 DOMAIN_FRONTEND = os.environ.get('DOMAIN_FRONTEND')

@@ -21,7 +21,7 @@ def send_email(subject, template_name, user, token=None, domain=None, from_email
         body = get_template(template_name).render({
                 'user': user,
                 'domain': domain or None,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)) or None,
+                'uid': urlsafe_base64_encode(force_bytes(user.public_id)) or None,
                 'token': token or None
         })
     elif ext == 'html' and app not in [app.split('.')[-1] for app in settings.LOCAL_APPS]:

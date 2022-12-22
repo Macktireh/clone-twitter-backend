@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from apps.follow.models import Follow
 
 
+@admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
 
     list_display = ('created', '_followers', '_following', 'updated',)
@@ -13,6 +14,3 @@ class FollowAdmin(admin.ModelAdmin):
     
     def _followers(self, instance):
         return f"{instance.followers.get_full_name()}"
-
-
-admin.site.register(Follow, FollowAdmin)
