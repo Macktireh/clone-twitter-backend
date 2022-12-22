@@ -2,10 +2,11 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from apps.authentication import serializers
-from apps.utils.response import error_messages, response_messages
+from apps.utils.response import error_messages, res
+
 
 User = get_user_model()
-res = response_messages('fr')
+
 
 class RequestResetPasswordSerializerTests(TestCase):
 

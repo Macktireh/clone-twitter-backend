@@ -4,7 +4,9 @@ from django.test import TestCase
 from apps.authentication import serializers
 from apps.utils.response import error_messages
 
+
 User = get_user_model()
+
 
 class UserChangePasswordSerializerTests(TestCase):
 

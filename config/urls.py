@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/comments/', include('apps.comment.urls')),
     path('api/', include('apps.follow.urls')),
     path('api/notifications/', include('apps.notification.urls')),
+    path('api/chat/', include('apps.chat.urls')),
     
     re_path(r'^docs(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^api/docs/$', schema_view.with_ui('swagger', cache_timeout=0), name='docs-api'),

@@ -4,7 +4,6 @@ from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from apps.notification.models import Notification
-from apps.profiles.serializers import UserSerializer
 from apps.utils.response import response_messages
 
 
