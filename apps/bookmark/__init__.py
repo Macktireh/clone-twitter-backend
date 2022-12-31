@@ -1,0 +1,1 @@
+BookmarkConfig = 'apps.bookmark.apps.BookmarkConfig'
