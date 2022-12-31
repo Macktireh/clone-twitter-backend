@@ -18,6 +18,7 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     liked = models.ManyToManyField(User, blank=True, default=None)
+    bookmarks = models.ManyToManyField(User, blank=True, default=None, related_name='bookmarked_posts')
     is_updated = models.BooleanField(default=False)
     
     objects = PostManager()
@@ -44,15 +45,17 @@ class Post(models.Model):
         super().save(*args, **kwargs)
 
 
+class LikeChoices(models.TextChoices):
+    
+    like = "Like", _('Like')
+    unLike = "Unlike", _('Unlike')
+
+
 class LikePost(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    LIKE_CHOICES = (
-        ('Like', 'Like'),
-        ('Unlike', 'Unlike'),
-    )
-    value = models.CharField(choices=LIKE_CHOICES, max_length=10)
+    value = models.CharField(choices=LikeChoices.choices, max_length=10)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
