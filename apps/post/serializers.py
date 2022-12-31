@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
+from apps.bookmark.models import Bookmark
 
 from apps.post.models import LikePost, Post
 from apps.comment.models import Comment
@@ -17,16 +18,16 @@ res = response_messages('fr')
 
 
 class LikePostSerializer(serializers.ModelSerializer):
-
+    
     authorDetail = UserSerializer(read_only=True, source='user')
     postPublicId = serializers.CharField(write_only=True)
     PublicId = serializers.CharField(source='post.public_id', read_only=True)
-
+    
     class Meta:
         model = LikePost
         fields = ['value', 'authorDetail', 'PublicId', 'postPublicId', 'created']
         read_only_fields = ['value', 'created']
-
+    
     def create(self, validate_data):
         postPublicId = validate_data.get('postPublicId')
         request = self.context.get('request')
@@ -55,25 +56,36 @@ class LikePostSerializer(serializers.ModelSerializer):
         return like
 
 
-class PostSerializer(serializers.ModelSerializer):
+class BookmarkUserSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ['public_id']
+        read_only_fields = ['public_id']
 
+
+class PostSerializer(serializers.ModelSerializer):
+    
     authorDetail = UserSerializer(read_only=True, source='author')
     publicId = serializers.CharField(read_only=True, source='public_id')
     body = serializers.CharField(required=False)
     image = serializers.ImageField(required=False)
     liked = UserSerializer(read_only=True, many=True)
-    # comments = CommentPostSerializer(read_only=True, many=True)
     numberComments = serializers.SerializerMethodField()
-
+    bookmarks = serializers.SerializerMethodField()
+    # bookmarkss = serializers.CharField(read_only=True, source="bookmarks.user.public_id")
+    
     def get_numberComments(self, obj):
         return Comment.objects.filter(post=obj).count()
-
+    
+    def get_bookmarks(self, obj):
+        return [user.public_id for user in obj.bookmarks.all()]
+    
     class Meta:
         model = Post
-        fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'numberComments']
-        # fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'comments', 'numberComments']
+        fields = ['publicId', 'authorDetail', 'body', 'image', 'is_updated', 'created', 'updated', 'liked', 'numberComments', 'bookmarks']
         read_only_fields = ['author', 'is_updated', 'created', 'updated', 'liked', 'comments']
-
+    
     def create(self, validate_data):
         request = self.context.get('request', None)
         body = validate_data.get('body', None)
