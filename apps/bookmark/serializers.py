@@ -5,7 +5,6 @@ from rest_framework import serializers
 from apps.bookmark.models import Bookmark
 from apps.post.models import Post
 from apps.post.serializers import PostSerializer
-from apps.profiles.serializers import UserSerializer
 from apps.utils.response import response_messages
 
 
