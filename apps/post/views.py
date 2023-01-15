@@ -45,9 +45,9 @@ class PostViewSet(viewsets.ModelViewSet):
             else:
                 return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_400_BAD_REQUEST)
         except cloudinary.exceptions.Error:
-            return Response({'errors': res["FILE_SIZE_TOO_LARGE"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except:
-            return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'errors': res["FILE_SIZE_TOO_LARGE"]}, status=status.HTTP_400_BAD_REQUEST)
+        # except:
+        #     return Response({'errors': res["SOMETHING_WENT_WRONG"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def destroy(self, request, *args, **kwargs):
         try:
