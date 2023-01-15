@@ -40,3 +40,7 @@ def list_to_queryset(model, data):
 
     pk_list = [obj.pk for obj in data]
     return model.objects.filter(pk__in=pk_list)
+
+
+def convert_to_mo(size: int) -> float:
+    round(size / (1024 * 1024), 1)
