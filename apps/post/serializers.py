@@ -90,13 +90,35 @@ class PostSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
         body = validate_data.get('body', None)
         image = validate_data.get('image', None)
+        
         if body or image:
             try:
                 new_post = Post.objects.create(author=request.user, body=body, image=image)
                 return new_post
             except cloudinary.exceptions.Error:
-                raise serializers.ValidationError(res["FILE_SIZE_TOO_LARGE"])
+                convert_to_mo = lambda size: round(size / (1024 * 1024), 1)
+                raise serializers.ValidationError({
+                    "type": "file size error",
+                    "message": f"La taille du fichier est trop grande. J'ai obtenu {convert_to_mo(image.size)} Mo. Le maximum est {convert_to_mo(10485760)} Mo"
+                })
             # except:
             #     raise serializers.ValidationError(res["SOMETHING_WENT_WRONG"])
         else:
             raise serializers.ValidationError(res["BODY_OR_IMAGE_FIELD_MUST_NOT_EMPTY"])
+    
+    def update(self, instance, validated_data):
+        body = validated_data.get('body', None)
+        image = validated_data.get('image', None)
+        
+        try:
+            if body:
+                instance.body = body
+            if image:
+                instance.image = image
+            return instance.save()
+        except cloudinary.exceptions.Error:
+                convert_to_mo = lambda size: round(size / (1024 * 1024), 1)
+                raise serializers.ValidationError({
+                    "type": "file size error",
+                    "message": f"La taille du fichier est trop grande. J'ai obtenu {convert_to_mo(image.size)} Mo. Le maximum est {convert_to_mo(10485760)} Mo"
+                })
