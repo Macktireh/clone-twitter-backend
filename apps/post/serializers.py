@@ -4,12 +4,11 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
-from apps.bookmark.models import Bookmark
 
 from apps.post.models import LikePost, Post
 from apps.comment.models import Comment
 from apps.profiles.serializers import UserSerializer
-from apps.comment.serializers import CommentPostSerializer
+from apps.utils.functions import convert_to_mo
 from apps.utils.response import response_messages
 
 
@@ -96,7 +95,6 @@ class PostSerializer(serializers.ModelSerializer):
                 new_post = Post.objects.create(author=request.user, body=body, image=image)
                 return new_post
             except cloudinary.exceptions.Error:
-                convert_to_mo = lambda size: round(size / (1024 * 1024), 1)
                 raise serializers.ValidationError({
                     "type": "file size error",
                     "message": f"La taille du fichier est trop grande. J'ai obtenu {convert_to_mo(image.size)} Mo. Le maximum est {convert_to_mo(10485760)} Mo"
@@ -117,7 +115,6 @@ class PostSerializer(serializers.ModelSerializer):
                 instance.image = image
             return instance.save()
         except cloudinary.exceptions.Error:
-                convert_to_mo = lambda size: round(size / (1024 * 1024), 1)
                 raise serializers.ValidationError({
                     "type": "file size error",
                     "message": f"La taille du fichier est trop grande. J'ai obtenu {convert_to_mo(image.size)} Mo. Le maximum est {convert_to_mo(10485760)} Mo"
