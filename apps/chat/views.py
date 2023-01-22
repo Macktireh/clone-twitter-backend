@@ -45,5 +45,12 @@ class MessagesNotificationViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     
     def list(self, request, *args, **kwargs):
-        messages = Message.objects.messages_received_not_seen(request.user)
-        return Response({"numberMessagesNotSeen": messages.count()}, status=status.HTTP_200_OK)
+        messages = Message.objects.messages_received_not_preview(request.user)
+        return Response({"numberMessagesNotif": messages.count()}, status=status.HTTP_200_OK)
+    
+    def create(self, request, *args, **kwargs):
+        messages = Message.objects.messages_received_not_preview(request.user)
+        for message in messages:
+                message.preview = True
+                message.save()
+        return Response({"numberMessagesNotif": 0}, status=status.HTTP_200_OK)

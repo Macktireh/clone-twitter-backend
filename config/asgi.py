@@ -7,16 +7,19 @@ from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 
 from config.wsgi import *
-from apps.notification import consumers as notification
+from apps.ws.middleware import TokenAuthMiddlewareStack
+from apps.ws.consumers import NotificationConsumer
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
-    'websocket': URLRouter(
+    'websocket': TokenAuthMiddlewareStack(
+        URLRouter(
         [
-            path('ws/notification/', notification.NotificationConsumer.as_asgi())
+            path('ws/notification/', NotificationConsumer.as_asgi())
         ]
+    )
     ),
 })
