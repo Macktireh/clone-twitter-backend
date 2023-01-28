@@ -6,8 +6,8 @@ from apps.chat.models import Message
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('created', '_sender', '_reciever', 'message', 'seen',)
-    list_editable = ('seen',)
+    list_display = ('created', '_sender', '_reciever', 'message', 'seen', 'preview',)
+    list_editable = ('seen', 'preview',)
     list_filter = ('seen', 'created',)
     
     def _sender(self, instance):
