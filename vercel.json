@@ -6,14 +6,9 @@
     },
     {
         "src": "build.sh",
-        "use": "@vercel/static-build",
-        "config": { "distDir": "staticfiles" }
+        "use": "@vercel/static-build"
     }],
     "routes": [
-        {
-            "src": "/staticfiles/(.*)",
-            "dest": "/staticfiles/$1"
-        },
         {
             "src": "/(.*)",
             "dest": "config/asgi.py"
