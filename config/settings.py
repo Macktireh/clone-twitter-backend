@@ -56,7 +56,6 @@ LOCAL_APPS = [
     'apps.follow',
     'apps.notification',
     'apps.bookmark',
-    'apps.chat',
 ]
 
 DEVELOP_APPS = [
