@@ -15,13 +15,14 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
-    'websocket': TokenAuthMiddlewareStack(
-        URLRouter(
-        [
-            path('ws/notification/', NotificationConsumer.as_asgi())
-        ]
-    )
-    ),
+    'websocket': 
+        # TokenAuthMiddlewareStack(
+            URLRouter(
+                [
+                    path('ws/notification/', NotificationConsumer.as_asgi())
+                ]
+            )
+        # ),
 })
 
 app = application
