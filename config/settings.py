@@ -56,6 +56,7 @@ LOCAL_APPS = [
     'apps.follow',
     'apps.notification',
     'apps.bookmark',
+    'apps.chat',
 ]
 
 DEVELOP_APPS = [
@@ -199,7 +200,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
