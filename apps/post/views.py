@@ -56,8 +56,8 @@ class PostViewSet(viewsets.ModelViewSet):
                 instance = Post.objects.get(public_id=public_id)
                 if not instance.author == request.user:
                     return Response({'errors': res["YOU_ARE_NOT_AUTHORIZED_FOR_THIS_ACTION"]}, status=status.HTTP_403_FORBIDDEN)
-                if len(str(instance.image)) != 0 and instance.image:
-                    cloudinary.uploader.destroy(str(instance.image))
+                # if len(str(instance.image)) != 0 and instance.image:
+                #     cloudinary.uploader.destroy(str(instance.image))
                 self.perform_destroy(instance)
                 return Response(status=status.HTTP_200_OK)
             return Response({'errors': res["MISSING_PARAMETER"]}, status=status.HTTP_400_BAD_REQUEST)

@@ -1,3 +1,5 @@
+import cloudinary
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -47,8 +49,12 @@ class Profile(models.Model):
     # def number_of_following(self):
     #     return self.following.all()
 
-    # def number_of_follower(self):
-    #     return self.follower.all()
+    def delete(self, *args, **kwargs):
+        if len(str(self.profile_picture)) != 0 and self.profile_picture:
+                cloudinary.uploader.destroy(str(self.profile_picture))
+        if len(str(self.cover_picture)) != 0 and self.cover_picture:
+                cloudinary.uploader.destroy(str(self.cover_picture))
+        super().delete(*args, **kwargs)
 
     class Meta:
         verbose_name = _('Profile')
