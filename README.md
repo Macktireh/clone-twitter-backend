@@ -1,12 +1,12 @@
 # Clone Twitter Backend With Django & Django Rest Framework 
 
-Ce projet est un clone de Twitter, développé avec Django, Django Rest Framework et Django Channels, et utilisant PostgreSQL pour la base de données et Redis comme système de messagerie. Il permet de créer des comptes utilisateur et modifier, de poster des tweets, de suivre d'autres utilisateurs, recevoir des notifications et de voir leur fil d'actualité.
+This project is a Twitter clone, developed with Django, Django Rest Framework and Django Channels, and using PostgreSQL for the database and Redis as the messaging system. It allows to create user accounts and edit, post tweets, follow other users, receive notifications and see their news feed.
 
-## Démarrage
+## Startup
 
-### Prérequis
+### Prerequisites
 
-- Python 3.9 ou +
+- Python 3.9+
 - PostgreSQL
 - Docker
 
