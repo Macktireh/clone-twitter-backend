@@ -24,3 +24,15 @@ git clone https://github.com/Macktireh/clone-twitter-backend.git clone-twitter-b
 ```bash
 cd clone-twitter-backend
 ```
+
+```bash
+python -m venv .venv
+```
+
+```bash
+source .venv/bin/activate
+```
+
+```bash
+pip install -r requirements.txt
+```
