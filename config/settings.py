@@ -152,7 +152,9 @@ if ENV == "production":
         )
     ]
 else:
-    hosts_redis = [(os.environ.get("REDIS_HOST", "localhost"), os.environ.get("REDIS_PORT", 6379))]
+    hosts_redis = [
+        (os.environ.get("REDIS_HOST", "localhost"), os.environ.get("REDIS_PORT", 6379))
+    ]
 
 
 CHANNEL_LAYERS = {
@@ -230,8 +232,8 @@ STATICFILES_DIRS = [
 ]
 
 if ENV != "production":
-    MEDIA_URL = '/mediafiles/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles/')
+    MEDIA_URL = "/mediafiles/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles/")
 
 if ENV == "production":
     CLOUDINARY_STORAGE = {
@@ -280,13 +282,13 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 
 # Domain name frontend
 
-DOMAIN_FRONTEND = os.environ.get('DOMAIN_FRONTEND', "http://localhost:3000")
+DOMAIN_FRONTEND = os.environ.get("DOMAIN_FRONTEND", "http://localhost:3000")
 
 
 DJANGORESIZED_DEFAULT_SIZE = [500, 500]
 # DJANGORESIZED_DEFAULT_SCALE = 0.5
 DJANGORESIZED_DEFAULT_QUALITY = 90
 DJANGORESIZED_DEFAULT_KEEP_META = True
-DJANGORESIZED_DEFAULT_FORCE_FORMAT = 'JPEG'
-DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'JPEG': ".jpg"}
+DJANGORESIZED_DEFAULT_FORCE_FORMAT = "JPEG"
+DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {"JPEG": ".jpg"}
 DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
