@@ -6,5 +6,5 @@ set -o pipefail
 set -o nounset
 
 # Launching migrations and the flask development server
-flask db upgrade
-flask run -h 0.0.0.0 -p 5000
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000

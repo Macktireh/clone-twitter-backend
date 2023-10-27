@@ -1,9 +1,12 @@
-from django.db import models
+import cloudinary
 
-from apps.post.models import Post
+from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
+from django_resized import ResizedImageField
+
+from apps.post.models import Post
 from apps.utils.functions import rename_img_post, uid_generator
 
 
@@ -16,7 +19,7 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     public_id = models.CharField(max_length=64, unique=True, null=False, blank=False)
     message = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to="cloneTwitter/media/comment", blank=True, null=True)
+    image = ResizedImageField(size=[500, 500], upload_to="cloneTwitter/media/comment", blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     liked = models.ManyToManyField(User, blank=True, default=None)
@@ -42,6 +45,11 @@ class Comment(models.Model):
         if self.public_id == '' or self.public_id is None:
             self.public_id = uid_generator()
         super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        if len(str(self.image)) != 0 and self.image:
+                cloudinary.uploader.destroy(str(self.image))
+        super().delete(*args, **kwargs)
 
 
 class LikeComment(models.Model):
