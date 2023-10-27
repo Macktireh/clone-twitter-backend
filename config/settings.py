@@ -152,7 +152,7 @@ if ENV == "production":
         )
     ]
 else:
-    hosts_redis = [(os.environ["REDIS_HOST"], os.environ["REDIS_PORT"])]
+    hosts_redis = [(os.environ.get("REDIS_HOST", "localhost"), os.environ.get("REDIS_PORT", 6379))]
 
 
 CHANNEL_LAYERS = {
