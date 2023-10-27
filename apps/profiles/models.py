@@ -12,8 +12,7 @@ User = get_user_model()
 
 
 class Profile(models.Model):
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     pseudo = models.CharField(max_length=48, blank=True, unique=True)
     bio = models.CharField(max_length=360, blank=True)
     birth_date = models.DateField(null=True, blank=True)
@@ -21,28 +20,28 @@ class Profile(models.Model):
         upload_to="cloneTwitter/media/profile",
         default="https://res.cloudinary.com/doysjtoym/image/upload/v1/cloneTwitter/default/profilePic_hbvouc",
         blank=True,
-        null=True
+        null=True,
     )
     cover_picture = models.ImageField(
         upload_to="cloneTwitter/media/cover",
         default="https://res.cloudinary.com/doysjtoym/image/upload/v1/cloneTwitter/default/coverPic_dbaax4",
         blank=True,
-        null=True
+        null=True,
     )
     isUploadProfilePic = models.BooleanField(default=False)
     isUploadCoverPic = models.BooleanField(default=False)
     # following = models.ManyToManyField(User, blank=True, related_name='following')
-    # follower = models.ManyToManyField(User, blank=True, related_name='follower') 
+    # follower = models.ManyToManyField(User, blank=True, related_name='follower')
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
     objects = ProfileManager()
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f"{self.user.first_name} {self.user.last_name}"
 
     def save(self, *args, **kwargs):
-        if self.pseudo == '' or self.pseudo is None:
+        if self.pseudo == "" or self.pseudo is None:
             self.pseudo = uid_generator()[:8]
         return super().save(*args, **kwargs)
 
@@ -57,6 +56,6 @@ class Profile(models.Model):
         super().delete(*args, **kwargs)
 
     class Meta:
-        verbose_name = _('Profile')
-        verbose_name_plural = _('Profiles')
-        ordering = ('-created',)
+        verbose_name = _("Profile")
+        verbose_name_plural = _("Profiles")
+        ordering = ("-created",)

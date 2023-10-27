@@ -1,10 +1,48 @@
 version: '3'
 
-name: CloneTwitter
-
 services:
+  api: 
+    build: 
+      context: .
+      dockerfile: ./docker/local/django/Dockerfile
+    image: clone-twitter-backend-api
+    container_name: api
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    command: /start
+    depends_on:
+      - redis
+      - db
+
+  db:
+    image: postgres:14
+    container_name: postgres
+    environment: 
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    # env_file: 
+    #   - ./.env
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
   redis:
     image: redis:5
     container_name: redis
     ports:
       - 6379:6379
+  
+  # client:
+  #   image: macktireh/clone-twittre-frontend
+  #   container_name: client
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+      # - api
+
+volumes:
+  database:
