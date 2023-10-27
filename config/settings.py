@@ -135,12 +135,12 @@ if TYPE_DATABASE == "sqlite3":
 else:
     DATABASES = {
         "default": {
-            "ENGINE": os.environ["DB_ENGINE"],
-            "NAME": os.environ["DB_NAME"],
-            "USER": os.environ["DB_USER"],
-            "PASSWORD": os.environ["DB_PASSWORD"],
-            "HOST": os.environ["DB_HOST"],
-            "PORT": os.environ["DB_PORT"],
+            "ENGINE": os.environ.get("DB_ENGINE"),
+            "NAME": os.environ.get("DB_NAME"),
+            "USER": os.environ.get("DB_USER"),
+            "PASSWORD": os.environ.get("DB_PASSWORD"),
+            "HOST": os.environ.get("DB_HOST"),
+            "PORT": os.environ.get("DB_PORT"),
         },
     }
 
@@ -280,7 +280,7 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 
 # Domain name frontend
 
-DOMAIN_FRONTEND = os.environ.get('DOMAIN_FRONTEND')
+DOMAIN_FRONTEND = os.environ.get('DOMAIN_FRONTEND', "http://localhost:3000")
 
 
 DJANGORESIZED_DEFAULT_SIZE = [500, 500]
