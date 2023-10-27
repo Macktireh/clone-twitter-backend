@@ -5,20 +5,22 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-
 # Tries to connect to the Postgresql database. Returns 0 if it
 # succeeds and 255 (-1) if it does not.
 postgres_ready() {
 python << END_PYTHON
 import sys
+import os
 import psycopg2
+from dotenv import load_dotenv
+load_dotenv(".env")
 try:
     psycopg2.connect(
-        dbname="${POSTGRES_DB}",
-        user="${POSTGRES_USER}",
-        password="${POSTGRES_PASSWORD}",
-        host="${POSTGRES_HOST}",
-        port="${POSTGRES_PORT}",
+        dbname=os.environ["DB_NAME"],
+        user=os.environ["DB_USER"],
+        password=os.environ["DB_PASSWORD"],
+        host=os.environ["DB_HOST"],
+        port=os.environ["DB_PORT"],
     )
 except psycopg2.OperationalError:
     sys.exit(-1)

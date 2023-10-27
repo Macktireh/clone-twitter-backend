@@ -113,7 +113,8 @@ class PostSerializer(serializers.ModelSerializer):
                 instance.body = body
             if image:
                 instance.image = image
-            return instance.save()
+            instance.save()
+            return instance
         except cloudinary.exceptions.Error:
                 raise serializers.ValidationError({
                     "type": "file size error",
