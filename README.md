@@ -61,11 +61,13 @@ If you prefer not to use Docker, here's how to install the application:
 python -m venv .venv
 ```
 
+*for MacOS or Linux*
 ```bash
-# for MacOS or Linux
 source .venv/bin/activate
+```
 
-# for Windows
+*for Windows*
+```bash
 .\venv\Scripts\activate
 ```
 
