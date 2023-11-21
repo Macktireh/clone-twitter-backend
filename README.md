@@ -88,7 +88,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-The application will be accessible at [http://localhost:8000](http://localhost:8000).
+The application will be accessible at [http://localhost:8000](http://localhost:8000)
 
 
 ## License
