@@ -88,9 +88,9 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-The application will be accessible at [http://localhost:8000](http://localhost:8000).
+The application will be accessible at [http://localhost:8000](http://localhost:8000)
 
 
 ## License
 
-his project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the [MIT License](LICENSE).
