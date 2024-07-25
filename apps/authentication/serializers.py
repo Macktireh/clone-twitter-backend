@@ -7,8 +7,10 @@ from django.utils.translation import gettext as _
 from django.utils import timezone
 
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
+from apps.authentication.social_login import GoogleLogin
 from apps.authentication.tokens import TokenGenerator
 from apps.authentication.validators import email_validation, password_validation
 from apps.utils.email import send_email
@@ -17,6 +19,27 @@ from apps.utils.response import error_messages, res
 
 User = get_user_model()
 
+
+class GoogleLoginSerializer(serializers.Serializer):
+    code = serializers.CharField()
+
+    def validate(self, attrs):
+        code = attrs.get('code')
+        google_user_data = GoogleLogin.validate(code)
+        try:
+            payload = {
+                "email": google_user_data["email"],
+                "first_name": google_user_data["given_name"],
+                "last_name": google_user_data["family_name"],
+                "provider": "google",
+            }
+        except Exception:
+            raise serializers.ValidationError("Invalid code.")
+
+        if google_user_data["aud"] != settings.GOOGLE_CLIENT_ID:
+            raise AuthenticationFailed("Couldn't verify audience.")
+
+        return payload
 
 class SignupSerializer(serializers.ModelSerializer):
 
@@ -89,7 +112,7 @@ class ActivationSerializer(serializers.Serializer):
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(public_id=uid)
-        except Exception as e:
+        except Exception:
             user = None
         if user and TokenGenerator().check_token(user, token):
             if not user.is_verified_email:
@@ -229,7 +252,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
         try:
             uid = force_str(urlsafe_base64_decode(uid))
             user = User.objects.get(public_id=uid)
-        except Exception as e:
+        except Exception:
             user = None
         if user and PasswordResetTokenGenerator().check_token(user, token):
             user.set_password(password)
@@ -286,5 +309,5 @@ class LogoutSerializer(serializers.Serializer):
             user.last_logout = timezone.now()
             user.save()
             return attrs
-        except:
+        except User.DoesNotExist:
             raise serializers.ValidationError(res["USER_DOES_NOT_EXIST"])
