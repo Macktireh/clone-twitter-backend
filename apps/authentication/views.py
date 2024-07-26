@@ -37,7 +37,7 @@ class SignupView(viewsets.ModelViewSet):
             user = serializer.save()
             token = TokenGenerator().make_token(user)
             send_email(
-                subject=f"Activation du compte sur {settings.DOMAIN_FRONTEND}",
+                subject="Activate your Twitter Clone account",
                 template_name="authentication/mail/activate.html",
                 user=user,
                 token=token,
