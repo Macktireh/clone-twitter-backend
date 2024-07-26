@@ -14,7 +14,7 @@ load = load_dotenv(os.path.join(BASE_DIR, ".env"))
 ENV = os.environ.get("ENV", "development")
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "sfghdtjrfypjouis5414enrgizn51454gpoze65s6pgptnoiuzenpfoiqerzn")
+SECRET_KEY = os.environ.get("SECRET_KEY", "sfghdtjrfypjouis5414enrgizn51454gpozeuzenpfoiqerzn")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ENV != "production"
@@ -62,9 +62,7 @@ LOCAL_APPS = [
     "apps.chat",
 ]
 
-DEVELOP_APPS = [
-    "livereload",
-]
+DEVELOP_APPS = []
 
 if ENV != "production":
     INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + DEVELOP_APPS
@@ -84,11 +82,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-MIDDLEWARE = (
-    MIDDLEWARE + ["livereload.middleware.LiveReloadScript"]
-    if ENV != "production"
-    else MIDDLEWARE
-)
+MIDDLEWARE = MIDDLEWARE + [] if ENV != "production" else MIDDLEWARE
 
 
 ROOT_URLCONF = "config.urls"
@@ -289,3 +283,6 @@ DJANGORESIZED_DEFAULT_KEEP_META = True
 DJANGORESIZED_DEFAULT_FORCE_FORMAT = "JPEG"
 DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {"JPEG": ".jpg"}
 DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")

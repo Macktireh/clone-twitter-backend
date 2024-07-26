@@ -21,6 +21,7 @@ class User(AbstractUser):
         default=False,
         help_text=_("Specifies whether the user should verify their email address.")
     )
+    auth_provider = models.CharField(max_length=255, blank=False, null=False, default='email')
     last_logout = models.DateTimeField(
         _('last date logout'), 
         blank=True, null=True,
