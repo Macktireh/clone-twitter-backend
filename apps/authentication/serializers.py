@@ -119,7 +119,7 @@ class ActivationSerializer(serializers.Serializer):
                 user.is_verified_email = True
                 user.save()
                 send_email(
-                    subject=f"{settings.DOMAIN_FRONTEND} - Your account has been successfully created and activated!", 
+                    subject="Twitter Clone - Your account has been successfully created and activated!", 
                     template_name='authentication/mail/activate_success.html', 
                     user=user, 
                     domain=settings.DOMAIN_FRONTEND
@@ -201,12 +201,12 @@ class RequestResetPasswordSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         email = attrs.get('email')
-        current_site = self.context.get('current_site')
+        # current_site = self.context.get('current_site')
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
             token = PasswordResetTokenGenerator().make_token(user)
             send_email(
-                subject=f"Réinitialisation du mot de passe sur {current_site}",
+                subject="Twitter Clone - Request to reset your password",
                 template_name='authentication/mail/send_email_reset_password.html',
                 user=user,
                 token=token,
@@ -258,7 +258,7 @@ class UserResetPasswordSerializer(serializers.Serializer):
             user.set_password(password)
             user.save()
             send_email(
-                subject=f"{settings.DOMAIN_FRONTEND} - Votre mot de passe a été changé avec succès !", 
+                subject="Twitter Clone - Your password has been successfully changed!", 
                 template_name='authentication/mail/password_rest_success.html', 
                 user=user, 
                 domain=settings.DOMAIN_FRONTEND

@@ -69,6 +69,6 @@ def response_messages(lang: str = None):
     }
 
 
-LANG = "fr"
+LANG = "en"
 
 res = response_messages(LANG)

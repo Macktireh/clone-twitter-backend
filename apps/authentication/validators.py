@@ -1,15 +1,13 @@
 import re
 
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext as _
 
-from rest_framework import serializers, validators
+from rest_framework import serializers
 
-from apps.utils.response import response_messages
+from apps.utils.response import res
 
 
 User = get_user_model()
-res = response_messages('fr')
 
 
 def email_validation(value):
