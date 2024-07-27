@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clone Twitter Template email</title>
+  <title></title>
 </head>
 
 <body style="
@@ -35,66 +35,76 @@
       width: 50px;
       text-align: center;
       margin: auto;"
-        src="https://media4.giphy.com/media/SMKiEh9WDO6ze/giphy.gif?cid=ecf05e47lqah6q1iam1iazxtvur6jkvduab5ymzlz9q7h7ve&rid=giphy.gif&ct=g"
+        src="https://mack-twitter.pages.dev/static/img/logo192.png"
         alt="logo Twitter">
     </div>
 
-    <h2 style="
-      text-align: center;
-      padding: 5px 5px 8px;">Bienvenue sur Clone Twitter</h2>
+    <h2 style="text-align: center;padding: 5px 5px 8px;" >Welcome to Twitter Clone</h2>
 
     <hr style="
       margin: 8px 0;">
 
-    <h3 style="
-      text-align: center;">{{user.first_name}},</h3>
+    <h3 style="text-align: center;">{{user.first_name}},</h3>
 
-    <p style="
-      text-align: center;
-      padding: 3px 5px;">Félicitations ! Vous êtes presque prêt à commencer à utiliser le clone Twitter. Cliquez
-      simplement sur le bouton
-      ci-dessous pour valider votre adresse e-mail.
+    <p style="text-align: center;padding: 3px 5px;">
+      Congratulations! You are almost ready to start using the Twitter clone. Just click the button below to verify your email address.
     </p>
 
-    <br>
+  
 
     <div style="
     display: flex;
     justify-content: center;
     margin: 5px auto;">
-      <a style="
-      padding: 8px 12px;
+      <a style="padding: 8px 12px;
       text-align: center;
       margin: auto;
       text-decoration: none;
       background-color: #1d9bf0;
       color: #f1f1f1;
-      border-radius: 5px;
-      " href="{{domain}}/auth/user/account/activation/{{uid}}/{{token}}">
-        Connectez-vous pour valider votre adresse e-mail
+      border-radius: 5px;"
+      href="{{domain}}/auth/user/account/activation/{{uid}}/{{token}}">
+      verify my email address
       </a>
     </div>
+
+    <p style="text-align: center;padding: 3px 5px;">
+      If the above button does not work, please copy and paste this link into your browser: <br>
+      <a style="text-align: center;
+      margin: auto;
+      text-decoration: none;
+      color: #1d9bf0;" 
+      href="{{domain}}/auth/user/account/activation/{{uid}}/{{token}}">
+      {{domain}}/auth/user/account/activation/{{uid}}/{{token}}
+      </a>
+    </p>
 
     <br>
 
     <p style="
       font-size: 16px;
       text-align: center;
-      padding: 0 5px;">Remarque : Vous devez effectuer cette validation dans les 24 heures qui suivent pour que votre
-      nouveau compte reste
-      activé.
+      padding: 0 5px;">
+      You must complete this verification within 24 hours for your new account to remain active.
     </p>
 
     <p style="
       font-size: 16px;
       text-align: center;
-      padding: 0 5px;">Si vous rencontrez un problème, <a style="
+      padding: 0 5px;">
+      If you did not sign up for this service, please ignore this email.
+    </p>
+
+    <p style="
+      font-size: 16px;
+      text-align: center;
+      padding: 0 5px;">If you encounter a problem, <a style="
       text-align: center;
       margin: auto;
       text-decoration: none;
       color: #1d9bf0;
-      " href="#">
-        veuillez nous contacter.
+      " href="https://github.com/Macktireh">
+      please contact us.
       </a>
     </p>
 
@@ -103,7 +113,7 @@
     <p style="
       font-size: 15px;
       text-align: center;
-      padding: 0 5px;">L'équipe du clone Twitter <br> <a style="
+      padding: 0 5px;">The Twitter clone team <br> <a style="
       text-align: center;
       margin: auto;
       text-decoration: none;
