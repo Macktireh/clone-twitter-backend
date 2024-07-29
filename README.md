@@ -1,77 +1,86 @@
-# Twitter Clone Project with Django & Django Rest Framework
+# Backend Twitter Clone
 
-Welcome to my Twitter Clone project built with Django, Django Rest Framework, and Django Channels. This project includes a wide range of features, including authentication, tweet management, likes, retweets, notifications, real-time chat, and more.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Macktireh/Media/main/images/clone-twitter-back.png" alt="Home screen" width=400>
+  <img src="https://raw.githubusercontent.com/Macktireh/Media/main/images/clone-twitter-api1.png" alt="Home screen" width=400>
+  <img src="https://raw.githubusercontent.com/Macktireh/Media/main/images/clone-twitter-api2.png" alt="Home screen" width=400>
+  <img src="https://raw.githubusercontent.com/Macktireh/Media/main/images/clone-twitter-api3.png" alt="Home screen" width=400>
+</p>
 
-## Backend Features
+## Table of Contents
+- [Description](#description)
+- [Features](#features)
+- [Demo](#demo)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Installation with Docker](#installation-with-docker)
+- [Installation without Docker](#installation-without-docker)
 
-The backend of this project is designed to handle all the features of a Twitter clone. Here's a list of the main features implemented:
 
-- **Authentication**: Endpoints for signup, email activation, login, password reset request, password reset, password change, JWT token refresh, JWT token verification, and logout are available.
+## Description
 
-- **Tweets**: Tweet endpoints for creating, reading, updating, and deleting tweets.
+This project is a backend implementation of a Twitter clone using Django, Django REST framework, Django Channels, PostgreSQL, Redis, and Cloudinary. This project includes a wide range of features, including authentication, tweet management, likes, retweets, notifications, real-time chat, and more. This repository contains the backend code. The frontend, built with React, Redux, and other technologies, can be found [clone-twitter-frontend](https://github.com/Macktireh/clone-twitter-frontend).
 
-- **Likes**: Users can like tweets, and there are endpoints to manage these actions.
 
-- **Bookmark**: Users can bookmark tweets, and there are endpoints to manage bookmarks.
+## Features
 
-- **Retweets**: You can create, read, update, and delete retweets.
-
-- **Retweet Likes**: Users can also like retweets, and there are endpoints to manage these actions.
-
-- **User Management**: Endpoints to get current user information, update current user information, and get information about other users are available. Additionally, you can manage following and followers.
-
-- **Notifications**: The real-time notification system is implemented, allowing users to receive real-time notifications.
-
-- **Real-Time Chat**: Users can communicate in real-time through the chat feature.
+- **Authentication**: Signup, email activation, login, password reset request, password reset, password change, JWT token refresh, JWT token verification, and logout.
+- **Social Auth**: Login with Google.
+- **Tweets**: Create, read, update, and delete tweets.
+- **Likes**: Manage likes on tweets.
+- **Bookmark**: Manage bookmarked tweets.
+- **Retweets**: Manage retweets.
+- **Retweet Likes**: Manage likes on retweets.
+- **User Management**: Get and update user information, manage following and followers.
+- **Notifications**: Real-time notification system.
+- **Real-Time Chat**: Real-time chat feature.
 
 
 ## Prerequisites
 
-- Python 3.10+
+- Python 3.12+
 - Git
-- PostgreSQL (optional)
-- Docker (optional)
+- Docker
+- PostgreSQL
+- Redis
+- Cloudinary
 
 
-## Installation
+## Getting Started
 
-1. Clone this repository to your machine.
+### Common Setup
 
-```bash
-git clone https://github.com/Macktireh/clone-twitter-backend.git clone-twitter-backend
+1. Clone the repository:
+
+```sh
+git clone https://github.com/Macktireh/clone-twitter-backend.git
+```
+```sh
+cd clone-twitter-backend
 ```
 
-2. Copy the `.env.example` file to `.env` and configure the environment variables as needed.
+2. Configure environment variables: Create a `.env` file based on the `.env.example` file and set your environment variables.
 
-### Using Docker
+### Installation with Docker
 
-3. Run the following command to start the application with Docker Compose:
+Build and start the Docker containers:
 
 ```bash
 docker-compose up --build
 ```
 
-### Without Docker
+### Installation without Docker
 
-If you prefer not to use Docker, here's how to install the application:
-
-3. Create a Python virtual environment and activate it.
+1. Create and activate a virtual environment:
 
 ```bash
-python -m venv .venv
+python -m venv venv
 ```
-
-*for MacOS or Linux*
 ```bash
-source .venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-*for Windows*
-```bash
-.\venv\Scripts\activate
-```
-
-4. Install Python dependencies using pip:
+2. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -82,15 +91,15 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-6. Run the Django development server:
+6. Start the development server:
 
 ```bash
 python manage.py runserver
 ```
-
+Your Twitter clone backend should now be up and running. 🎉
 The application will be accessible at [http://localhost:8000](http://localhost:8000).
 
 
 ## License
 
-his project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the [MIT License](LICENSE).
