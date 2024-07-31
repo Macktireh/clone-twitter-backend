@@ -10,7 +10,6 @@
 ## Table of Contents
 - [Description](#description)
 - [Features](#features)
-- [Demo](#demo)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Installation with Docker](#installation-with-docker)
