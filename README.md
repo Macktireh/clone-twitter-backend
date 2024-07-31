@@ -100,7 +100,6 @@ Your Twitter clone backend should now be up and running. 🎉
 The application will be accessible at [http://localhost:8000](http://localhost:8000).
 
 
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
