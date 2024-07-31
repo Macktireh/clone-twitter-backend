@@ -95,8 +95,10 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
+
 Your Twitter clone backend should now be up and running. 🎉
 The application will be accessible at [http://localhost:8000](http://localhost:8000).
+
 
 
 ## License
