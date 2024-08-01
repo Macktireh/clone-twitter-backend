@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils import timezone
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.views import APIView
@@ -19,6 +21,21 @@ User = get_user_model()
 class GoogleLoginView(APIView):
     permission_classes = []
 
+    @swagger_auto_schema(
+        request_body=serializers.GoogleLoginSerializer,
+        operation_id="Login with Google",
+        responses={
+            status.HTTP_200_OK: openapi.Response(
+                description="User successfully logged in",
+                examples={
+                    "application/json": {
+                        "message": res["LOGIN_SUCCESS"],
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxMjM0NTY3IiwiaWF0IjoxNjY4MDIyMDQ1LCJleHAiOjE2NjgyMjIwNDV9.0ySjxP4kYn0SbZ9jyX8tT9wZ5Gc2yq0fZw6aQOQjZ0"
+                    }
+                }
+            )
+        }
+    )
     def post(self, request) -> Response:
         serializer = serializers.GoogleLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
