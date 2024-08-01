@@ -1,4 +1,3 @@
-from pprint import pprint
 from django.conf import settings
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
@@ -49,12 +48,7 @@ class GoogleLogin:
             id_info = id_token.verify_oauth2_token(
                 id_token=token, request=Request(), audience=settings.GOOGLE_CLIENT_ID
             )
-            print()
-            pprint(id_info)
-            print()
-            # return id_info
             if "accounts.google.com" in id_info["iss"]:
-                # print("id_info", id_info)
                 return id_info
         except Exception:
             return "Invalid Token"
