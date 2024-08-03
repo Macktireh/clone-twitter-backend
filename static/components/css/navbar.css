@@ -18,15 +18,30 @@ header {
 
 nav {
   width: inherit;
+  max-width: 1200px;
+  padding: 0 20px;
   height: inherit;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 }
 
 .logo {
   font-size: 18px;
   font-weight: 700;
+}
+
+.logo a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
+
+}
+
+.logo a img {
+  width: 20px;
+  height: 20px;
 }
 
 .nav-items,
