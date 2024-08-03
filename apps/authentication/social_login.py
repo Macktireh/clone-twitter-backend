@@ -54,15 +54,29 @@ class GoogleLogin:
             return "Invalid Token"
 
 
-def register_user_with_social_account(provider, email, first_name, last_name):
-    try:
-        user, created = User.objects.get_or_create(email=email, first_name=first_name, last_name=last_name, auth_provider=provider)
-    except Exception:
-        raise AuthenticationFailed("Something went wrong. Please try again later.")
+def register_user_with_social_account(auth_provider, email, first_name, last_name):
+    print()
+    print("register_user_with_social_account", auth_provider, email, first_name, last_name)
+    print()
+    user, created = User.objects.get_or_create(
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        auth_provider=auth_provider,
+    )
+    # try:
+    # except Exception:
+    #     raise AuthenticationFailed("Something went wrong. Please try again later.")
 
     if created:
         user.is_verified_email = True
+        # user.auth_provider = auth_provider
         user.save()
+    # else:
+    #     if user.auth_provider != auth_provider:
+    #         raise AuthenticationFailed(
+    #             f"Please use your {user.auth_provider} account to login."
+    #         )
 
     token = get_tokens_for_user(user)
     return {"message": res["LOGIN_SUCCESS"], "token": token}
