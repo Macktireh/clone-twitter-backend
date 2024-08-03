@@ -58,15 +58,15 @@ def register_user_with_social_account(auth_provider, email, first_name, last_nam
     print()
     print("register_user_with_social_account", auth_provider, email, first_name, last_name)
     print()
-    user, created = User.objects.get_or_create(
-        email=email,
-        first_name=first_name,
-        last_name=last_name,
-        auth_provider=auth_provider,
-    )
-    # try:
-    # except Exception:
-    #     raise AuthenticationFailed("Something went wrong. Please try again later.")
+    try:
+        user, created = User.objects.get_or_create(
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            auth_provider=auth_provider,
+        )
+    except Exception:
+        raise AuthenticationFailed(f"Get OR Create User: {email} {first_name} {last_name} {auth_provider}.")
 
     if created:
         user.is_verified_email = True
