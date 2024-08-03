@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import BadRequest
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils import timezone
@@ -39,7 +40,10 @@ class GoogleLoginView(APIView):
     def post(self, request) -> Response:
         serializer = serializers.GoogleLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        data = register_user_with_social_account(**serializer.validated_data)
+        try:
+            data = register_user_with_social_account(**serializer.validated_data)
+        except BadRequest as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         return Response(data, status=status.HTTP_200_OK)
 
 
