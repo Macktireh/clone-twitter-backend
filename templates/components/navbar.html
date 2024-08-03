@@ -1,7 +1,8 @@
 {% load static %}
 <nav>
   <div class="logo">
-    <a href="">
+    <a href="{% url 'home' %}">
+      <img src="{% static 'svg/twitter.svg' %}" alt="logo twitter">
       <span>Clone Twitter</span>
     </a>
   </div>
@@ -18,14 +19,14 @@
       <div class="nav-item-link">Frontend</div>
       <span class="nav-item-active"></span>
     </a>
-    <a href="https://github.com/Macktireh/clone-twitter-backend" target="_blank">
-      <div class="nav-item-link">Code Backend</div>
+    {% comment %} <a href="https://github.com/Macktireh/clone-twitter-backend" target="_blank">
+      <div class="nav-item-link">Source code back</div>
       <span class="nav-item-active"></span>
     </a>
     <a href="https://github.com/Macktireh/clone-twitter-frontend" target="_blank">
-      <div class="nav-item-link">Code Frontend</div>
+      <div class="nav-item-link">Source Code Front</div>
       <span class="nav-item-active"></span>
-    </a>
+    </a> {% endcomment %}
     {% if user.is_superuser %}
     <a href="{% url 'admin:index' %}" target="_blank">
       <div class="nav-item-link">Admin</div>
@@ -33,13 +34,13 @@
     </a>
     {% endif %}
   </div>
-  <div class="nav-auth">
+  {% comment %} <div class="nav-auth">
     {% if user.is_authenticated %}
     <a href="">Deconnexion</a>
     {% else %}
     <a href="">Connexion</a>
     {% endif %}
-  </div>
+  </div> {% endcomment %}
 </nav>
 {% comment %}
 <div class="hidden mobile-menu">
