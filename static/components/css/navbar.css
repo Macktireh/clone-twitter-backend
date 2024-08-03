@@ -25,6 +25,11 @@ nav {
   justify-content: space-between;
   align-items: center;
 }
+@media (max-width: 360px) {
+  nav {
+    padding: 0 10px;
+  }
+}
 
 .logo {
   font-size: 18px;
@@ -44,21 +49,18 @@ nav {
   height: 20px;
 }
 
-.nav-items,
-.nav-auth {
-  height: 85%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-}
-
 .nav-items {
   height: 85%;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1.5rem;
+}
+
+@media (max-width: 520px) {
+  .nav-items {
+    gap: 0.8rem;
+  }
 }
 
 .nav-items a {
