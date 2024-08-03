@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import BadRequest
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
 from requests_oauthlib import OAuth2Session
@@ -55,28 +56,20 @@ class GoogleLogin:
 
 
 def register_user_with_social_account(auth_provider, email, first_name, last_name):
-    print()
-    print("register_user_with_social_account", auth_provider, email, first_name, last_name)
-    print()
     try:
-        user, created = User.objects.get_or_create(
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            auth_provider=auth_provider,
-        )
+        user, created = User.objects.get_or_create(email=email)
     except Exception:
-        raise AuthenticationFailed(f"Get OR Create User: {email} {first_name} {last_name} {auth_provider}.")
+        raise BadRequest("Something went wrong. Please try again.")
 
     if created:
+        user.first_name = first_name
+        user.last_name = last_name
         user.is_verified_email = True
-        # user.auth_provider = auth_provider
+        user.auth_provider = auth_provider
         user.save()
-    # else:
-    #     if user.auth_provider != auth_provider:
-    #         raise AuthenticationFailed(
-    #             f"Please use your {user.auth_provider} account to login."
-    #         )
+    else:
+        if user.auth_provider != auth_provider:
+            raise AuthenticationFailed("Your account is linked to another provider.")
 
     token = get_tokens_for_user(user)
     return {"message": res["LOGIN_SUCCESS"], "token": token}
