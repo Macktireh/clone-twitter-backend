@@ -24,14 +24,14 @@ class GoogleLoginSerializer(serializers.Serializer):
     code = serializers.CharField()
 
     def validate(self, attrs):
-        code = attrs.get('code')
+        code = attrs.get("code")
         google_user_data = GoogleLogin.validate(code)
         try:
             payload = {
                 "email": google_user_data["email"],
                 "first_name": google_user_data["given_name"],
                 "last_name": google_user_data["family_name"],
-                "provider": "google",
+                "auth_provider": "google",
             }
         except Exception:
             raise serializers.ValidationError("Invalid code.")
@@ -41,74 +41,84 @@ class GoogleLoginSerializer(serializers.Serializer):
 
         return payload
 
-class SignupSerializer(serializers.ModelSerializer):
 
+class SignupSerializer(serializers.ModelSerializer):
     email = serializers.CharField(
         validators=[email_validation],
         error_messages={
-            "blank": error_messages('blank', 'fr', 'email'),
-            "required": error_messages('required', 'fr', 'email'),
+            "blank": error_messages("blank", "fr", "email"),
+            "required": error_messages("required", "fr", "email"),
         },
     )
     firstName = serializers.CharField(
-        source='first_name', 
+        source="first_name",
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Prénom'),
-            "required": error_messages('required', 'fr', 'Prénom'),
+            "blank": error_messages("blank", "fr", "Prénom"),
+            "required": error_messages("required", "fr", "Prénom"),
         },
     )
     lastName = serializers.CharField(
-        source='last_name', 
+        source="last_name",
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Nom'),
-            "required": error_messages('required', 'fr', 'Nom'),
+            "blank": error_messages("blank", "fr", "Nom"),
+            "required": error_messages("required", "fr", "Nom"),
         },
     )
     password = serializers.CharField(
-        validators=[password_validation], 
-        write_only=True, 
+        validators=[password_validation],
+        write_only=True,
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Mot de passe'),
-            "required": error_messages('required', 'fr', 'Mot de passe'),
+            "blank": error_messages("blank", "fr", "Mot de passe"),
+            "required": error_messages("required", "fr", "Mot de passe"),
         },
     )
     confirmPassword = serializers.CharField(
-        max_length=128, 
-        style={'input_type': 'password'}, 
+        max_length=128,
+        style={"input_type": "password"},
         write_only=True,
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Confirmation mot de passe'),
-            "required": error_messages('required', 'fr', 'Confirmation mot de passe'),
+            "blank": error_messages("blank", "fr", "Confirmation mot de passe"),
+            "required": error_messages("required", "fr", "Confirmation mot de passe"),
         },
     )
 
     class Meta:
         model = User
-        fields = ['email', 'firstName', 'lastName', 'password', 'confirmPassword',]
+        fields = [
+            "email",
+            "firstName",
+            "lastName",
+            "password",
+            "confirmPassword",
+        ]
 
     def validate(self, attrs):
-        password = attrs.get('password')
-        confirm_password = attrs.get('confirmPassword')
+        password = attrs.get("password")
+        confirm_password = attrs.get("confirmPassword")
         if password and confirm_password and password != confirm_password:
-            raise serializers.ValidationError(res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"])
+            raise serializers.ValidationError(
+                res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"]
+            )
         return attrs
 
     def create(self, validate_data):
-        validate_data.pop('confirmPassword', None)
+        validate_data.pop("confirmPassword", None)
         return User.objects.create_user(**validate_data)
 
 
 class ActivationSerializer(serializers.Serializer):
-
     uidb64 = serializers.CharField(write_only=True)
     token = serializers.CharField(write_only=True)
 
     class Meta:
-        fields = ['uidb64', 'token',]
+        fields = [
+            "uidb64",
+            "token",
+        ]
 
     def validate(self, attrs):
-        uidb64 = attrs.get('uidb64')
-        token = attrs.get('token')
+        uidb64 = attrs.get("uidb64")
+        token = attrs.get("token")
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(public_id=uid)
@@ -119,10 +129,10 @@ class ActivationSerializer(serializers.Serializer):
                 user.is_verified_email = True
                 user.save()
                 send_email(
-                    subject="Twitter Clone - Your account has been successfully created and activated!", 
-                    template_name='authentication/mail/activate_success.html', 
-                    user=user, 
-                    domain=settings.DOMAIN_FRONTEND
+                    subject="Twitter Clone - Your account has been successfully created and activated!",
+                    template_name="authentication/mail/activate_success.html",
+                    user=user,
+                    domain=settings.DOMAIN_FRONTEND,
                 )
         else:
             raise serializers.ValidationError(res["TOKEN_IS_NOT_VALID_OR_HAS_EXPIRED"])
@@ -130,87 +140,89 @@ class ActivationSerializer(serializers.Serializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-
     email = serializers.EmailField(
         max_length=255,
         error_messages={
-            "blank": error_messages('blank', 'fr', 'email'),
-            "required": error_messages('required', 'fr', 'email'),
+            "blank": error_messages("blank", "fr", "email"),
+            "required": error_messages("required", "fr", "email"),
         },
     )
     password = serializers.CharField(
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Mot de passe'),
-            "required": error_messages('required', 'fr', 'Mot de passe'),
+            "blank": error_messages("blank", "fr", "Mot de passe"),
+            "required": error_messages("required", "fr", "Mot de passe"),
         },
     )
 
     class Meta:
         model = User
-        fields = ['email', 'password',]
+        fields = [
+            "email",
+            "password",
+        ]
 
 
 class UserChangePasswordSerializer(serializers.Serializer):
-
     password = serializers.CharField(
-        max_length=128, 
-        style={'input_type': 'password'}, 
-        write_only=True, 
+        max_length=128,
+        style={"input_type": "password"},
+        write_only=True,
         validators=[password_validation],
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Mot de passe'),
-            "required": error_messages('required', 'fr', 'Mot de passe'),
+            "blank": error_messages("blank", "fr", "Mot de passe"),
+            "required": error_messages("required", "fr", "Mot de passe"),
         },
     )
     confirm_password = serializers.CharField(
-        max_length=128, 
-        style={'input_type': 'password'}, 
+        max_length=128,
+        style={"input_type": "password"},
         write_only=True,
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Confirmation mot de passe'),
-            "required": error_messages('required', 'fr', 'Confirmation mot de passe'),
+            "blank": error_messages("blank", "fr", "Confirmation mot de passe"),
+            "required": error_messages("required", "fr", "Confirmation mot de passe"),
         },
     )
 
     class Meta:
-        fields = ['password', 'confirm_password']
+        fields = ["password", "confirm_password"]
 
     def validate(self, attrs):
-        password = attrs.get('password')
-        confirm_password = attrs.get('confirm_password')
-        user = self.context.get('user')
+        password = attrs.get("password")
+        confirm_password = attrs.get("confirm_password")
+        user = self.context.get("user")
         if password != confirm_password:
-            raise serializers.ValidationError(res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"])
+            raise serializers.ValidationError(
+                res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"]
+            )
         user.set_password(password)
         user.save()
         return attrs
 
 
 class RequestResetPasswordSerializer(serializers.Serializer):
-
     email = serializers.EmailField(
         max_length=255,
         error_messages={
-            "blank": error_messages('blank', 'fr', 'email'),
-            "required": error_messages('required', 'fr', 'email'),
+            "blank": error_messages("blank", "fr", "email"),
+            "required": error_messages("required", "fr", "email"),
         },
     )
 
     class Meta:
-        fields = ['email']
+        fields = ["email"]
 
     def validate(self, attrs):
-        email = attrs.get('email')
+        email = attrs.get("email")
         # current_site = self.context.get('current_site')
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
             token = PasswordResetTokenGenerator().make_token(user)
             send_email(
                 subject="Twitter Clone - Request to reset your password",
-                template_name='authentication/mail/send_email_reset_password.html',
+                template_name="authentication/mail/send_email_reset_password.html",
                 user=user,
                 token=token,
-                domain=settings.DOMAIN_FRONTEND
+                domain=settings.DOMAIN_FRONTEND,
             )
         else:
             raise serializers.ValidationError(res["EMAIL_ADDRESS_DOES_NOT_EXIST"])
@@ -218,37 +230,38 @@ class RequestResetPasswordSerializer(serializers.Serializer):
 
 
 class UserResetPasswordSerializer(serializers.Serializer):
-
     password = serializers.CharField(
-        max_length=128, 
-        style={'input_type': 'password'}, 
-        write_only=True, 
+        max_length=128,
+        style={"input_type": "password"},
+        write_only=True,
         validators=[password_validation],
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Mot de passe'),
-            "required": error_messages('required', 'fr', 'Mot de passe'),
+            "blank": error_messages("blank", "fr", "Mot de passe"),
+            "required": error_messages("required", "fr", "Mot de passe"),
         },
     )
     confirm_password = serializers.CharField(
-        max_length=128, 
-        style={'input_type': 'password'}, 
+        max_length=128,
+        style={"input_type": "password"},
         write_only=True,
         error_messages={
-            "blank": error_messages('blank', 'fr', 'Comfirmation mot de passe'),
-            "required": error_messages('required', 'fr', 'Confirmation mot de passe'),
+            "blank": error_messages("blank", "fr", "Comfirmation mot de passe"),
+            "required": error_messages("required", "fr", "Confirmation mot de passe"),
         },
     )
 
     class Meta:
-        fields = ['password', 'confirm_password']
+        fields = ["password", "confirm_password"]
 
     def validate(self, attrs):
-        password = attrs.get('password')
-        confirm_password = attrs.get('confirm_password')
-        uid = self.context.get('uid')
-        token = self.context.get('token')
+        password = attrs.get("password")
+        confirm_password = attrs.get("confirm_password")
+        uid = self.context.get("uid")
+        token = self.context.get("token")
         if password != confirm_password:
-            raise serializers.ValidationError(res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"])
+            raise serializers.ValidationError(
+                res["PASSWORD_AND_PASSWORD_CONFIRM_NOT_MATCH"]
+            )
         try:
             uid = force_str(urlsafe_base64_decode(uid))
             user = User.objects.get(public_id=uid)
@@ -258,10 +271,10 @@ class UserResetPasswordSerializer(serializers.Serializer):
             user.set_password(password)
             user.save()
             send_email(
-                subject="Twitter Clone - Your password has been successfully changed!", 
-                template_name='authentication/mail/password_rest_success.html', 
-                user=user, 
-                domain=settings.DOMAIN_FRONTEND
+                subject="Twitter Clone - Your password has been successfully changed!",
+                template_name="authentication/mail/password_rest_success.html",
+                user=user,
+                domain=settings.DOMAIN_FRONTEND,
             )
         else:
             raise serializers.ValidationError(res["TOKEN_IS_NOT_VALID_OR_HAS_EXPIRED"])
@@ -269,7 +282,6 @@ class UserResetPasswordSerializer(serializers.Serializer):
 
 
 class LogoutSerializer(serializers.Serializer):
-    
     public_id = serializers.CharField(
         write_only=True,
         error_messages={
@@ -284,13 +296,13 @@ class LogoutSerializer(serializers.Serializer):
             "required": "Le champ refresh est obligatoire.",
         },
     )
-    
+
     class Meta:
-        fields = ['public_id', 'refresh']
-        
+        fields = ["public_id", "refresh"]
+
     def validate(self, attrs):
-        public_id = attrs.get('public_id', None)
-        refresh = attrs.get('refresh', None)
+        public_id = attrs.get("public_id", None)
+        refresh = attrs.get("refresh", None)
         if not public_id or not refresh:
             raise serializers.ValidationError(
                 _("Les champs public_id et refresh sont obligatoire.")
@@ -298,7 +310,7 @@ class LogoutSerializer(serializers.Serializer):
         self.public_id = public_id
         self.refresh = refresh
         return attrs
-    
+
     def save(self, attrs):
         try:
             RefreshToken(self.refresh).blacklist()
