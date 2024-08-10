@@ -9,32 +9,44 @@ User = get_user_model()
 
 
 class FollowManager(models.Manager):
-    
     def get_all_following(self, user):
         from apps.follow.models import Follow
-        return Follow.objects.select_related('following').filter(followers=user)
-    
+
+        return Follow.objects.select_related("following").filter(followers=user)
+
     def get_all_followers(self, user):
         from apps.follow.models import Follow
-        return Follow.objects.select_related('followers').filter(following=user)
-    
+
+        return Follow.objects.select_related("followers").filter(following=user)
+
     def is_following(self, me, user):
         from apps.follow.models import Follow
-        return Follow.objects.filter(Q(followers=me) & Q(following=user)), Follow.objects.filter(Q(followers=me) & Q(following=user)).exists()
-    
+
+        return Follow.objects.filter(
+            Q(followers=me) & Q(following=user)
+        ), Follow.objects.filter(Q(followers=me) & Q(following=user)).exists()
+
     def connect_people(self, user):
         from apps.follow.models import Follow
-        
+
         followers = Follow.objects.get_all_followers(user)
         following = Follow.objects.get_all_following(user)
-        
-        list_publicId_follow = [f.followers.public_id for f in followers] + [f.following.public_id for f in following]
-        
+
+        list_publicId_follow = [f.followers.public_id for f in followers] + [
+            f.following.public_id for f in following
+        ]
+
         users = User.objects.all()
         people = []
-        
+
         for u in users:
-            if u.public_id not in list(set(list_publicId_follow)) and u != user: people.append(u)
-        
+            if (
+                u.public_id not in list(set(list_publicId_follow))
+                and u != user
+                and u.is_verified_email
+                and u.is_active
+            ):
+                people.append(u)
+
         qs = list_to_queryset(model=User, data=people)
         return qs
