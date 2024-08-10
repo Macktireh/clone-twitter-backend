@@ -36,7 +36,7 @@ class FollowManager(models.Manager):
             f.following.public_id for f in following
         ]
 
-        users = User.objects.all()
+        users = User.objects.prefetch_related("profile").all()
         people = []
 
         for u in users:
@@ -49,4 +49,4 @@ class FollowManager(models.Manager):
                 people.append(u)
 
         qs = list_to_queryset(model=User, data=people)
-        return qs
+        return qs.order_by("profile__sort_id")

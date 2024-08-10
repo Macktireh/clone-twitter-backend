@@ -30,6 +30,7 @@ class Profile(models.Model):
     )
     isUploadProfilePic = models.BooleanField(default=False)
     isUploadCoverPic = models.BooleanField(default=False)
+    sort_id = models.IntegerField(default=9999, null=True)
     # following = models.ManyToManyField(User, blank=True, related_name='following')
     # follower = models.ManyToManyField(User, blank=True, related_name='follower')
     updated = models.DateTimeField(auto_now=True)
