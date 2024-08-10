@@ -7,11 +7,11 @@ from apps.profiles.models import Profile
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
 
-    list_display = ('full_name', 'pseudo', 'bio', 'birth_date',)
+    list_display = ('full_name', 'pseudo', 'bio', 'created', 'updated',)
     fieldsets = (
         (None, {'fields': ('user',)}),
         (_('Personal info'), {'fields': ('pseudo', 'bio', 'birth_date', 'profile_picture', 'cover_picture',)}),
-        # (_('Following'), {'fields': ('following',)}),
+        (_('Sorting'), {'fields': ('sort_id',)}),
     )
     search_fields = ('full_name', 'pseudo',)
 
